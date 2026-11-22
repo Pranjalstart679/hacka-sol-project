@@ -7,12 +7,13 @@ import { DonorRegistration } from './components/DonorRegistration';
 import { ReferralProgram } from './components/ReferralProgram';
 import { HackathonPitchContext } from './components/HackathonPitchContext';
 import { DonorSimulatorModal } from './components/DonorSimulatorModal';
+import { DataSyncEngine } from './components/DataSyncEngine';
 import { getBloodBanksWithDistance, INITIAL_DONORS } from './lib/mockData';
 import { BloodBank, Donor, BloodGroup, SOSRequest } from './types';
-import { Droplet, Home } from 'lucide-react';
+import { Droplet, Home, Database } from 'lucide-react';
 
 export function App() {
-  const [activeTab, setActiveTab] = useState<'home' | 'emergency' | 'banks' | 'register' | 'rewards' | 'pitch'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'emergency' | 'banks' | 'register' | 'rewards' | 'pitch' | 'sync'>('home');
   
   // Real coordinates state (defaults to Nava Raipur, CG - site of Hack-A-Sol IIIT-NR)
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number; label: string }>({
@@ -65,6 +66,14 @@ export function App() {
     setDonors(prev => [newDonor, ...prev]);
   };
 
+  const handleSyncComplete = (_newBanks: BloodBank[], newDonors: Donor[], districtName: string) => {
+    setDonors(prev => [...newDonors, ...prev]);
+    setUserLocation(prev => ({
+      ...prev,
+      label: `${districtName} (Live Synced via e-RaktKosh Scraper)`
+    }));
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans selection:bg-red-500 selection:text-white">
       {/* Navigation */}
@@ -85,6 +94,12 @@ export function App() {
             onUpdateLocation={handleUpdateLocation}
             onStartEmergency={handleStartEmergency}
             onNavigateTab={(tab) => setActiveTab(tab)}
+          />
+        )}
+
+        {activeTab === 'sync' && (
+          <DataSyncEngine
+            onSyncComplete={handleSyncComplete}
           />
         )}
 
@@ -142,17 +157,18 @@ export function App() {
         </button>
         <span className="text-slate-600">|</span>
         <button
+          onClick={() => setActiveTab('sync')}
+          className={`flex items-center gap-1 font-medium ${activeTab === 'sync' ? 'text-blue-400 font-bold underline' : 'text-slate-400 hover:text-blue-300'}`}
+        >
+          <Database className="w-3.5 h-3.5" />
+          Scraper Sync
+        </button>
+        <span className="text-slate-600">|</span>
+        <button
           onClick={() => setActiveTab('banks')}
           className={`font-medium ${activeTab === 'banks' ? 'text-white font-bold underline' : 'text-slate-400 hover:text-white'}`}
         >
           Banks & Map
-        </button>
-        <span className="text-slate-600">|</span>
-        <button
-          onClick={() => setActiveTab('rewards')}
-          className={`font-medium ${activeTab === 'rewards' ? 'text-amber-400 font-bold underline' : 'text-slate-400 hover:text-amber-300'}`}
-        >
-          Rewards
         </button>
       </div>
 

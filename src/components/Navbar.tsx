@@ -1,9 +1,9 @@
 import React from 'react';
-import { Droplet, PhoneCall, HeartHandshake, Building2, Gift, PlayCircle, Home } from 'lucide-react';
+import { Droplet, PhoneCall, HeartHandshake, Building2, Gift, PlayCircle, Home, Database } from 'lucide-react';
 
 interface NavbarProps {
-  activeTab: 'home' | 'emergency' | 'banks' | 'register' | 'rewards' | 'pitch';
-  setActiveTab: (tab: 'home' | 'emergency' | 'banks' | 'register' | 'rewards' | 'pitch') => void;
+  activeTab: 'home' | 'emergency' | 'banks' | 'register' | 'rewards' | 'pitch' | 'sync';
+  setActiveTab: (tab: 'home' | 'emergency' | 'banks' | 'register' | 'rewards' | 'pitch' | 'sync') => void;
   onResetEmergency?: () => void;
 }
 
@@ -82,6 +82,18 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onReset
             </button>
 
             <button
+              onClick={() => setActiveTab('sync')}
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 ${
+                activeTab === 'sync'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-slate-700 hover:bg-blue-50'
+              }`}
+            >
+              <Database className="w-4 h-4 text-blue-500" />
+              e-RaktKosh Scraper
+            </button>
+
+            <button
               onClick={() => setActiveTab('banks')}
               className={`px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 ${
                 activeTab === 'banks'
@@ -121,12 +133,12 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onReset
               onClick={() => setActiveTab('pitch')}
               className={`px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 ${
                 activeTab === 'pitch'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-slate-700 hover:bg-blue-50'
+                  ? 'bg-slate-900 text-white'
+                  : 'text-slate-700 hover:bg-slate-100'
               }`}
             >
-              <PlayCircle className="w-4 h-4 text-blue-600" />
-              Hackathon Story
+              <PlayCircle className="w-4 h-4 text-red-500" />
+              Pitch Story
             </button>
           </nav>
         </div>
@@ -151,6 +163,14 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onReset
           Find Blood
         </button>
         <button
+          onClick={() => setActiveTab('sync')}
+          className={`flex-shrink-0 px-3 py-1.5 rounded-md text-xs font-medium ${
+            activeTab === 'sync' ? 'bg-blue-600 text-white' : 'text-slate-700 bg-white border border-slate-200'
+          }`}
+        >
+          Scraper Sync
+        </button>
+        <button
           onClick={() => setActiveTab('banks')}
           className={`flex-shrink-0 px-3 py-1.5 rounded-md text-xs font-medium ${
             activeTab === 'banks' ? 'bg-slate-900 text-white' : 'text-slate-700 bg-white border border-slate-200'
@@ -173,14 +193,6 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onReset
           }`}
         >
           Rewards
-        </button>
-        <button
-          onClick={() => setActiveTab('pitch')}
-          className={`flex-shrink-0 px-3 py-1.5 rounded-md text-xs font-medium ${
-            activeTab === 'pitch' ? 'bg-blue-600 text-white' : 'text-slate-700 bg-white border border-slate-200'
-          }`}
-        >
-          Hackathon Story
         </button>
       </div>
     </header>
