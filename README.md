@@ -54,8 +54,8 @@ RakhtKhoj operates as a lightweight, mobile-first progressive web platform coupl
 
 ```bash
 # Clone the repository
-git clone https://github.com/Pranjal/Hackasol.git
-cd Hackasol
+git clone https://github.com/Pranjalstart679/hacka-sol-project.git
+cd hacka-sol-project
 
 # Install dependencies
 npm install
