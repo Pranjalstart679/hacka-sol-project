@@ -1,5 +1,5 @@
 import React from 'react';
-import { Droplet, PhoneCall, HeartHandshake, Building2, Gift, PlayCircle, Home, Database } from 'lucide-react';
+import { Droplet, PhoneCall, Building2, Gift, PlayCircle, Home, Database, UserPlus } from 'lucide-react';
 
 interface NavbarProps {
   activeTab: 'home' | 'emergency' | 'banks' | 'register' | 'rewards' | 'pitch' | 'sync';
@@ -9,19 +9,21 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onResetEmergency }) => {
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+    <header className="sticky top-0 z-50 bg-white border-b border-neutral-200">
       {/* Emergency Helpline Banner */}
-      <div className="bg-red-700 text-white text-xs px-4 py-1.5 font-medium flex items-center justify-between">
-        <div className="flex items-center gap-2 max-w-7xl mx-auto w-full">
-          <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-red-800 text-[10px] tracking-wide uppercase font-bold">Emergency 24x7</span>
-          <span className="hidden sm:inline">Blood Helpline:</span>
-          <a href="tel:104" className="underline font-bold hover:text-red-100 flex items-center gap-1">
-            <PhoneCall className="w-3 h-3" /> 104 / 1910
+      <div className="bg-neutral-900 text-neutral-200 text-xs px-4 py-2 font-mono flex items-center justify-between border-b border-neutral-800">
+        <div className="flex items-center gap-3 max-w-7xl mx-auto w-full">
+          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] tracking-wider uppercase font-bold bg-red-950 text-red-400 border border-red-800">
+            Emergency Helpline
+          </span>
+          <span className="hidden sm:inline text-neutral-400">National Blood Lines:</span>
+          <a href="tel:104" className="font-bold text-white hover:text-red-300 flex items-center gap-1">
+            <PhoneCall className="w-3 h-3 text-red-400" /> 104 / 1910
           </a>
-          <span className="text-red-300">|</span>
-          <span className="text-red-100">National Emergency: 112</span>
-          <div className="ml-auto text-red-200 hidden md:block">
-            Directly bridge e-RaktKosh with verified donors
+          <span className="text-neutral-700">|</span>
+          <span className="text-neutral-400">National Emergency: 112</span>
+          <div className="ml-auto text-neutral-400 text-[11px] hidden md:block">
+            Decentralized e-RaktKosh Emergency Verification
           </div>
         </div>
       </div>
@@ -31,113 +33,110 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onReset
         <div className="flex items-center justify-between h-16">
           {/* Logo & Tagline */}
           <div 
-            className="flex items-center gap-3 cursor-pointer group"
+            className="flex items-center gap-3 cursor-pointer select-none"
             onClick={() => {
               setActiveTab('home');
               if (onResetEmergency) onResetEmergency();
             }}
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-red-600 to-red-500 flex items-center justify-center text-white shadow-md shadow-red-500/20 group-hover:scale-105 transition-transform">
-              <Droplet className="w-6 h-6 fill-white stroke-none" />
+            <div className="w-9 h-9 rounded bg-red-700 flex items-center justify-center text-white border border-red-800 flex-shrink-0">
+              <Droplet className="w-5 h-5 fill-white stroke-none" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <span className="font-extrabold text-xl tracking-tight text-slate-900">
-                  Rak<span className="text-red-600">shya</span>
+              <div className="flex items-baseline gap-2">
+                <span className="font-display text-2xl font-bold tracking-tightest text-neutral-900">
+                  Rak<span className="text-red-700 italic">shya</span>
                 </span>
-                <span className="text-[10px] bg-red-100 text-red-800 font-semibold px-2 py-0.5 rounded-full border border-red-200">
-                  MVP v1.0
+                <span className="text-[10px] font-mono uppercase tracking-wider text-neutral-500">
+                  v1.0
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 hidden sm:block">
+              <p className="text-[11px] text-neutral-500 hidden sm:block -mt-1 font-sans">
                 Emergency Blood Discovery & Live Donor Network
               </p>
             </div>
           </div>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1 lg:gap-2">
+          <nav className="hidden md:flex items-center gap-1.5 font-sans text-xs">
             <button
               onClick={() => setActiveTab('home')}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 ${
+              className={`px-3 py-2 rounded font-medium transition-colors ${
                 activeTab === 'home'
-                  ? 'bg-slate-900 text-white'
-                  : 'text-slate-700 hover:bg-slate-100'
+                  ? 'bg-neutral-900 text-white'
+                  : 'text-neutral-700 hover:bg-neutral-100'
               }`}
             >
-              <Home className="w-4 h-4" />
               Home
             </button>
 
             <button
               onClick={() => setActiveTab('emergency')}
-              className={`px-3.5 py-2 rounded-lg text-sm font-extrabold transition-all flex items-center gap-1.5 shadow-sm ${
+              className={`px-3.5 py-2 rounded font-semibold transition-colors flex items-center gap-1.5 border ${
                 activeTab === 'emergency'
-                  ? 'bg-red-600 text-white shadow-red-600/30'
-                  : 'bg-red-50 text-red-700 hover:bg-red-100 border border-red-200'
+                  ? 'bg-red-700 text-white border-red-800'
+                  : 'bg-red-50 text-red-700 hover:bg-red-100 border-red-200'
               }`}
             >
-              <Droplet className="w-4 h-4 fill-current stroke-none" />
+              <Droplet className="w-3.5 h-3.5 fill-current stroke-none" />
               Find Blood Now
             </button>
 
             <button
               onClick={() => setActiveTab('sync')}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 ${
+              className={`px-3 py-2 rounded font-medium transition-colors flex items-center gap-1.5 ${
                 activeTab === 'sync'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-slate-700 hover:bg-blue-50'
+                  ? 'bg-neutral-900 text-white'
+                  : 'text-neutral-700 hover:bg-neutral-100'
               }`}
             >
-              <Database className="w-4 h-4 text-blue-500" />
+              <Database className="w-3.5 h-3.5 text-neutral-500" />
               e-RaktKosh Scraper
             </button>
 
             <button
               onClick={() => setActiveTab('banks')}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 ${
+              className={`px-3 py-2 rounded font-medium transition-colors ${
                 activeTab === 'banks'
-                  ? 'bg-slate-900 text-white'
-                  : 'text-slate-700 hover:bg-slate-100'
+                  ? 'bg-neutral-900 text-white'
+                  : 'text-neutral-700 hover:bg-neutral-100'
               }`}
             >
-              <Building2 className="w-4 h-4" />
               Blood Banks
             </button>
 
             <button
               onClick={() => setActiveTab('register')}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 ${
+              className={`px-3 py-2 rounded font-medium transition-colors flex items-center gap-1 ${
                 activeTab === 'register'
-                  ? 'bg-slate-900 text-white'
-                  : 'text-slate-700 hover:bg-slate-100'
+                  ? 'bg-neutral-900 text-white'
+                  : 'text-neutral-700 hover:bg-neutral-100'
               }`}
             >
-              <HeartHandshake className="w-4 h-4" />
+              <UserPlus className="w-3.5 h-3.5 text-neutral-500" />
               Join as Donor
             </button>
 
             <button
               onClick={() => setActiveTab('rewards')}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 ${
+              className={`px-3 py-2 rounded font-medium transition-colors flex items-center gap-1 ${
                 activeTab === 'rewards'
-                  ? 'bg-amber-600 text-white'
-                  : 'text-slate-700 hover:bg-amber-50'
+                  ? 'bg-neutral-900 text-white'
+                  : 'text-neutral-700 hover:bg-neutral-100'
               }`}
             >
-              <Gift className="w-4 h-4 text-amber-500" />
+              <Gift className="w-3.5 h-3.5 text-neutral-500" />
               Rewards
             </button>
 
             <button
               onClick={() => setActiveTab('pitch')}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 ${
+              className={`px-3 py-2 rounded font-medium transition-colors ${
                 activeTab === 'pitch'
-                  ? 'bg-slate-900 text-white'
-                  : 'text-slate-700 hover:bg-slate-100'
+                  ? 'bg-neutral-900 text-white'
+                  : 'text-neutral-700 hover:bg-neutral-100'
               }`}
             >
-              <PlayCircle className="w-4 h-4 text-red-500" />
               Pitch Story
             </button>
           </nav>
@@ -145,51 +144,51 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onReset
       </div>
 
       {/* Mobile Nav Tabs */}
-      <div className="flex md:hidden overflow-x-auto border-t border-slate-200 px-2 py-1.5 bg-slate-50 gap-1 scrollbar-none">
+      <div className="flex md:hidden overflow-x-auto border-t border-neutral-200 px-3 py-2 bg-neutral-50 gap-1.5 scrollbar-none font-sans">
         <button
           onClick={() => setActiveTab('home')}
-          className={`flex-shrink-0 px-3 py-1.5 rounded-md text-xs font-semibold ${
-            activeTab === 'home' ? 'bg-slate-900 text-white' : 'text-slate-700 bg-white border border-slate-200'
+          className={`flex-shrink-0 px-3 py-1.5 rounded text-xs font-medium ${
+            activeTab === 'home' ? 'bg-neutral-900 text-white' : 'text-neutral-700 bg-white border border-neutral-200'
           }`}
         >
           Home
         </button>
         <button
           onClick={() => setActiveTab('emergency')}
-          className={`flex-shrink-0 px-3 py-1.5 rounded-md text-xs font-extrabold ${
-            activeTab === 'emergency' ? 'bg-red-600 text-white' : 'text-red-700 bg-red-50 border border-red-200'
+          className={`flex-shrink-0 px-3 py-1.5 rounded text-xs font-semibold ${
+            activeTab === 'emergency' ? 'bg-red-700 text-white' : 'text-red-700 bg-red-50 border border-red-200'
           }`}
         >
           Find Blood
         </button>
         <button
           onClick={() => setActiveTab('sync')}
-          className={`flex-shrink-0 px-3 py-1.5 rounded-md text-xs font-medium ${
-            activeTab === 'sync' ? 'bg-blue-600 text-white' : 'text-slate-700 bg-white border border-slate-200'
+          className={`flex-shrink-0 px-3 py-1.5 rounded text-xs font-medium ${
+            activeTab === 'sync' ? 'bg-neutral-900 text-white' : 'text-neutral-700 bg-white border border-neutral-200'
           }`}
         >
           Scraper Sync
         </button>
         <button
           onClick={() => setActiveTab('banks')}
-          className={`flex-shrink-0 px-3 py-1.5 rounded-md text-xs font-medium ${
-            activeTab === 'banks' ? 'bg-slate-900 text-white' : 'text-slate-700 bg-white border border-slate-200'
+          className={`flex-shrink-0 px-3 py-1.5 rounded text-xs font-medium ${
+            activeTab === 'banks' ? 'bg-neutral-900 text-white' : 'text-neutral-700 bg-white border border-neutral-200'
           }`}
         >
           Blood Banks
         </button>
         <button
           onClick={() => setActiveTab('register')}
-          className={`flex-shrink-0 px-3 py-1.5 rounded-md text-xs font-medium ${
-            activeTab === 'register' ? 'bg-slate-900 text-white' : 'text-slate-700 bg-white border border-slate-200'
+          className={`flex-shrink-0 px-3 py-1.5 rounded text-xs font-medium ${
+            activeTab === 'register' ? 'bg-neutral-900 text-white' : 'text-neutral-700 bg-white border border-neutral-200'
           }`}
         >
           Donor Signup
         </button>
         <button
           onClick={() => setActiveTab('rewards')}
-          className={`flex-shrink-0 px-3 py-1.5 rounded-md text-xs font-medium ${
-            activeTab === 'rewards' ? 'bg-amber-600 text-white' : 'text-slate-700 bg-white border border-slate-200'
+          className={`flex-shrink-0 px-3 py-1.5 rounded text-xs font-medium ${
+            activeTab === 'rewards' ? 'bg-neutral-900 text-white' : 'text-neutral-700 bg-white border border-neutral-200'
           }`}
         >
           Rewards

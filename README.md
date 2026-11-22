@@ -1,6 +1,6 @@
 # Rakshya - Emergency Blood Discovery & Live Donor Network
 
-Transforming e-RaktKosh into an immediate, zero-friction emergency network for patients and local donors.
+An emergency blood discovery and donor network connecting critical patients with verified hospital inventories and nearby donors across India.
 
 **Live Production App:** [https://rakshya-app.vercel.app](https://rakshya-app.vercel.app)
 

@@ -10,11 +10,11 @@ import {
   CheckCircle2, 
   ShieldAlert, 
   Share2, 
-  ExternalLink,
   ChevronRight,
   ArrowLeft,
   Hospital,
-  Navigation
+  Navigation,
+  Activity
 } from 'lucide-react';
 
 interface EmergencyWizardProps {
@@ -45,7 +45,7 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
     }
   }, [initialGroup]);
 
-  // SOS Form State
+  // Form State
   const [patientName, setPatientName] = useState('Rohan Deshmukh');
   const [patientAge, setPatientAge] = useState(28);
   const [patientGender, setPatientGender] = useState<'Male' | 'Female' | 'Other'>('Male');
@@ -91,63 +91,88 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-10">
-      {/* Step Indicator */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between text-xs sm:text-sm font-semibold text-slate-500 mb-2">
-          <span className={step >= 1 ? 'text-red-600 font-bold' : ''}>1. Blood Group</span>
-          <span className={step >= 2 ? 'text-red-600 font-bold' : ''}>2. Blood Banks</span>
-          <span className={step >= 3 ? 'text-red-600 font-bold' : ''}>3. Donor SOS</span>
-          <span className={step >= 4 ? 'text-red-600 font-bold' : ''}>4. Live Matching</span>
+    <div className="max-w-5xl mx-auto px-4 py-8 sm:py-12 space-y-8">
+      {/* Editorial Step Header Bar */}
+      <div className="border border-neutral-200 bg-white rounded-xl p-4 sm:p-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-mono text-xs text-neutral-500 border-b border-neutral-100 pb-3 mb-3">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-red-600" />
+            <span className="text-neutral-800 font-bold uppercase tracking-wider">Clinical Triage Terminal</span>
+          </div>
+          <div>Stage {step} of 4 • Haversine Radius Active</div>
         </div>
-        <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
-          <div 
-            className="bg-red-600 h-full transition-all duration-300"
-            style={{ width: `${(step / 4) * 100}%` }}
-          />
+
+        <div className="grid grid-cols-4 gap-2 text-[11px] font-mono">
+          <button 
+            onClick={() => setStep(1)} 
+            className={`text-left p-2 rounded border transition-colors ${step === 1 ? 'border-neutral-900 bg-neutral-900 text-white font-bold' : step > 1 ? 'border-neutral-300 text-neutral-800' : 'border-neutral-200 text-neutral-400'}`}
+          >
+            01. Blood Group
+          </button>
+          <button 
+            onClick={() => selectedGroup && setStep(2)} 
+            disabled={!selectedGroup}
+            className={`text-left p-2 rounded border transition-colors ${step === 2 ? 'border-neutral-900 bg-neutral-900 text-white font-bold' : step > 2 ? 'border-neutral-300 text-neutral-800' : 'border-neutral-200 text-neutral-400'}`}
+          >
+            02. Storage Units
+          </button>
+          <button 
+            onClick={() => selectedGroup && setStep(3)} 
+            disabled={!selectedGroup}
+            className={`text-left p-2 rounded border transition-colors ${step === 3 ? 'border-neutral-900 bg-neutral-900 text-white font-bold' : step > 3 ? 'border-neutral-300 text-neutral-800' : 'border-neutral-200 text-neutral-400'}`}
+          >
+            03. Broadcast SOS
+          </button>
+          <button 
+            onClick={() => activeSOS && setStep(4)} 
+            disabled={!activeSOS}
+            className={`text-left p-2 rounded border transition-colors ${step === 4 ? 'border-neutral-900 bg-neutral-900 text-white font-bold' : 'border-neutral-200 text-neutral-400'}`}
+          >
+            04. Dispatch Room
+          </button>
         </div>
       </div>
 
       {/* ================= STEP 1: BLOOD GROUP SELECTION ================= */}
       {step === 1 && (
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-10">
+        <div className="border border-neutral-200 bg-white rounded-xl p-6 sm:p-12 space-y-8">
           {onBackToHome && (
             <button
               onClick={onBackToHome}
-              className="text-xs font-semibold text-slate-500 hover:text-slate-800 flex items-center gap-1 mb-4"
+              className="font-mono text-xs text-neutral-500 hover:text-neutral-900 flex items-center gap-1.5 transition-colors"
             >
-              <ArrowLeft className="w-3.5 h-3.5" /> Back to Home
+              <ArrowLeft className="w-3.5 h-3.5" /> Return to Masthead
             </button>
           )}
 
-          <div className="text-center max-w-xl mx-auto mb-8">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-red-100 text-red-700 mb-3">
-              <ShieldAlert className="w-3.5 h-3.5" /> Emergency Protocol
+          <div className="max-w-2xl">
+            <span className="font-mono text-xs uppercase tracking-wider text-red-700 font-semibold block mb-2">
+              Primary Diagnostic Step
             </span>
-            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-              What is the blood group of the patient?
+            <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-neutral-900 tracking-tightest leading-[1.1]">
+              Select patient blood group for immediate matching.
             </h1>
-            <p className="text-sm text-slate-500 mt-2">
-              No long forms or delays. Tap the patient's blood type to instantly calculate safe compatible donors and check live blood bank inventory.
+            <p className="text-sm text-neutral-600 mt-3 leading-generous">
+              No lengthy forms or delays during critical transfusion windows. Select the patient's blood type to calculate antigen compatibility and query live blood bank tallies.
             </p>
           </div>
 
-          {/* Blood Group Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-2xl mx-auto">
+          {/* Blood Group Matrix */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-3xl">
             {BLOOD_GROUPS.map((group) => {
               const isSelected = selectedGroup === group;
               return (
                 <button
                   key={group}
                   onClick={() => setSelectedGroup(group)}
-                  className={`p-4 sm:p-6 rounded-xl border-2 text-center transition-all flex flex-col items-center justify-center ${
+                  className={`p-5 rounded-lg border text-left transition-colors flex flex-col justify-between h-28 ${
                     isSelected
-                      ? 'border-red-600 bg-red-50 text-red-900 shadow-md shadow-red-500/10 scale-[1.02]'
-                      : 'border-slate-200 hover:border-slate-300 bg-slate-50/50 text-slate-800'
+                      ? 'border-neutral-900 bg-neutral-900 text-white'
+                      : 'border-neutral-200 hover:border-neutral-400 bg-neutral-50 text-neutral-900'
                   }`}
                 >
-                  <span className="text-2xl sm:text-3xl font-black tracking-tight">{group}</span>
-                  <span className="text-[11px] font-medium text-slate-500 mt-1">
+                  <span className="font-mono text-2xl sm:text-3xl font-bold tracking-tight">{group}</span>
+                  <span className={`text-[11px] font-mono uppercase tracking-wider ${isSelected ? 'text-neutral-300' : 'text-neutral-500'}`}>
                     {group === 'O-' ? 'Universal Donor' : group === 'AB+' ? 'Universal Recipient' : 'RBC Type'}
                   </span>
                 </button>
@@ -155,21 +180,21 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
             })}
           </div>
 
-          {/* Dynamic Compatibility Preview */}
+          {/* Antigen Compatibility Output Card */}
           {selectedGroup && (
-            <div className="mt-8 p-4 bg-slate-50 border border-slate-200 rounded-xl max-w-2xl mx-auto">
-              <div className="flex items-center gap-2 text-xs font-bold uppercase text-slate-600 mb-2">
+            <div className="border border-neutral-200 rounded-lg p-5 bg-neutral-50 max-w-3xl space-y-3 font-mono text-xs">
+              <div className="flex items-center gap-2 text-neutral-700 font-semibold uppercase tracking-wider text-[11px]">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                Antigen Compatibility Engine Calculation:
+                Antigen Compatibility Engine
               </div>
-              <p className="text-sm text-slate-700">
-                A patient with <strong className="text-red-600 font-extrabold">{selectedGroup}</strong> blood can safely receive transfusions from donors with:
+              <p className="text-neutral-700 font-sans text-xs sm:text-sm leading-generous">
+                A patient requiring <strong className="text-red-700 font-bold">{selectedGroup}</strong> blood can safely receive transfusions from verified donors with these types:
               </p>
-              <div className="flex flex-wrap gap-2 mt-2">
+              <div className="flex flex-wrap gap-2 pt-1">
                 {compatibleGroups.map((g) => (
                   <span
                     key={g}
-                    className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-extrabold bg-red-600 text-white shadow-xs"
+                    className="px-3 py-1 rounded bg-neutral-900 text-white font-mono font-bold text-xs border border-neutral-800"
                   >
                     {g}
                   </span>
@@ -178,14 +203,13 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
             </div>
           )}
 
-          {/* Next Button */}
-          <div className="mt-8 flex justify-center">
+          <div>
             <button
               onClick={() => setStep(2)}
               disabled={!selectedGroup}
-              className="w-full sm:w-auto px-8 py-3.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl shadow-lg shadow-red-600/25 flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="px-8 py-3.5 bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-semibold rounded flex items-center gap-2 transition-colors border border-neutral-800"
             >
-              Continue to Nearest Blood Banks
+              Examine Regional Storage Stock
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -196,41 +220,40 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
       {step === 2 && (
         <div className="space-y-6">
           {/* Header Card */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+          <div className="border border-neutral-200 bg-white rounded-xl p-6 sm:p-8 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-neutral-200 pb-4">
               <div>
                 <button
                   onClick={() => setStep(1)}
-                  className="text-xs font-semibold text-slate-500 hover:text-slate-800 flex items-center gap-1 mb-2"
+                  className="font-mono text-xs text-neutral-500 hover:text-neutral-900 flex items-center gap-1 mb-2"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" /> Back to Blood Group
                 </button>
-                <h2 className="text-xl sm:text-2xl font-black text-slate-900">
-                  Nearest Blood Banks for <span className="text-red-600">{selectedGroup}</span>
+                <h2 className="font-display text-2xl sm:text-3xl font-bold text-neutral-900 tracking-tightest">
+                  Storage Units for <span className="text-red-700">{selectedGroup}</span>
                 </h2>
-                <div className="flex items-center gap-1.5 text-xs text-slate-500 mt-1">
-                  <MapPin className="w-3.5 h-3.5 text-red-600" />
-                  <span>Searching around: <strong>{userLocation.label}</strong> ({userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)})</span>
+                <div className="flex items-center gap-1.5 font-mono text-xs text-neutral-500 mt-1">
+                  <MapPin className="w-3.5 h-3.5 text-neutral-400" />
+                  <span>Reference: <strong className="text-neutral-800">{userLocation.label}</strong></span>
                 </div>
               </div>
 
-              {/* Fast Switch to Direct Donor SOS */}
               <button
                 onClick={() => setStep(3)}
-                className="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm font-bold rounded-xl shadow-sm flex items-center justify-center gap-2 whitespace-nowrap"
+                className="px-5 py-2.5 bg-red-700 hover:bg-red-800 text-white text-xs font-semibold rounded flex items-center justify-center gap-2 transition-colors border border-red-600 whitespace-nowrap"
               >
-                Skip Banks & Search Donors Directly
+                Skip to Citizen Donor Dispatch
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Crucial Problem Highlight from Hackathon */}
-            <div className="mt-4 p-3.5 bg-amber-50 border border-amber-200 rounded-xl text-amber-900 text-xs flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+            {/* Factual Note */}
+            <div className="p-4 bg-amber-50/80 border border-amber-200 rounded text-xs text-amber-950 font-sans leading-generous flex items-start gap-3">
+              <AlertTriangle className="w-4 h-4 text-amber-700 flex-shrink-0 mt-0.5" />
               <div>
-                <strong className="font-bold">12% of Indian districts are &gt;100 km away from any blood bank.</strong>
-                <p className="text-amber-800 mt-0.5">
-                  If blood bank stock is 0 units or distance is prohibitive, use the <strong>"Search Donors Near You"</strong> option below to alert verified local donors on WhatsApp immediately.
+                <strong>Distance Risk: 12% of Indian districts are over 100 km from any operational blood storage facility.</strong>
+                <p className="mt-0.5 text-amber-900">
+                  If nearby hospital stock is depleted or travel time exceeds safety windows, trigger the direct WhatsApp broadcast below to alert verified local donors immediately.
                 </p>
               </div>
             </div>
@@ -246,41 +269,41 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
               return (
                 <div
                   key={bank.id}
-                  className={`bg-white rounded-xl border p-5 shadow-sm transition-all ${
-                    hasStock ? 'border-slate-200 hover:border-slate-300' : 'border-red-200 bg-red-50/20'
+                  className={`border rounded-lg p-5 transition-colors bg-white ${
+                    hasStock ? 'border-neutral-200' : 'border-neutral-300 bg-neutral-50/50'
                   }`}
                 >
-                  <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-start justify-between gap-3">
                     <div>
-                      <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-700 mb-1.5">
-                        {bank.category} • {bank.is24x7 ? '24x7 Open' : 'Limited Hours'}
+                      <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-500 block mb-1">
+                        {bank.category} • {bank.is24x7 ? '24x7 Service' : 'Limited Hours'}
                       </span>
-                      <h3 className="font-bold text-slate-900 text-base leading-snug">
+                      <h3 className="font-sans font-bold text-neutral-900 text-sm leading-snug">
                         {bank.name}
                       </h3>
-                      <p className="text-xs text-slate-500 mt-1 flex items-center gap-1">
-                        <MapPin className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                      <p className="text-xs text-neutral-500 mt-1 flex items-center gap-1 font-sans">
+                        <MapPin className="w-3 h-3 text-neutral-400 flex-shrink-0" />
                         {bank.address}
                       </p>
                     </div>
 
-                    <div className="text-right flex-shrink-0">
-                      <div className="text-xs font-semibold text-slate-500">Distance</div>
-                      <div className={`text-base font-extrabold ${isFar ? 'text-amber-600' : 'text-slate-900'}`}>
+                    <div className="text-right flex-shrink-0 font-mono">
+                      <span className="text-[10px] text-neutral-400 uppercase block">Distance</span>
+                      <span className={`text-sm font-bold ${isFar ? 'text-amber-700' : 'text-neutral-900'}`}>
                         {bank.distanceKm} km
-                      </div>
+                      </span>
                     </div>
                   </div>
 
                   {/* Stock counter */}
-                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                  <div className="mt-4 pt-3 border-t border-neutral-100 flex items-center justify-between">
                     <div>
-                      <div className="text-[11px] text-slate-500">Stock for {selectedGroup}:</div>
-                      <div className="flex items-baseline gap-1.5">
-                        <span className={`text-xl font-black ${hasStock ? 'text-emerald-600' : 'text-red-600'}`}>
+                      <div className="text-[11px] font-mono text-neutral-500">Available {selectedGroup}:</div>
+                      <div className="flex items-baseline gap-1.5 font-mono">
+                        <span className={`text-lg font-bold ${hasStock ? 'text-emerald-700' : 'text-red-700'}`}>
                           {stockForGroup} Units
                         </span>
-                        <span className="text-[10px] text-slate-400">({bank.lastUpdated})</span>
+                        <span className="text-[10px] text-neutral-400">({bank.lastUpdated})</span>
                       </div>
                     </div>
 
@@ -289,17 +312,17 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
                         href={`https://www.google.com/maps/dir/?api=1&destination=${bank.latitude},${bank.longitude}`}
                         target="_blank"
                         rel="noreferrer"
-                        className="px-2.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg flex items-center gap-1 transition-colors"
+                        className="px-2.5 py-1.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 text-xs font-semibold rounded flex items-center gap-1 border border-neutral-200 transition-colors"
                       >
-                        <Navigation className="w-3.5 h-3.5 text-blue-600" />
-                        Map
+                        <Navigation className="w-3 h-3 text-neutral-600" />
+                        Directions
                       </a>
                       <a
                         href={`tel:${bank.phone}`}
-                        className="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
+                        className="px-3 py-1.5 bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-semibold rounded flex items-center gap-1.5 border border-neutral-800 transition-colors"
                       >
-                        <Phone className="w-3.5 h-3.5 text-emerald-400" />
-                        Call
+                        <Phone className="w-3 h-3 text-neutral-300" />
+                        Helpline
                       </a>
                     </div>
                   </div>
@@ -308,51 +331,56 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
             })}
           </div>
 
-          {/* Urgent Trigger: "Are blood banks too far / empty?" */}
-          <div className="bg-gradient-to-r from-red-600 to-red-700 text-white rounded-2xl p-6 sm:p-8 shadow-lg shadow-red-600/20 text-center">
-            <h3 className="text-xl sm:text-2xl font-black tracking-tight">
-              Banks too far or units depleted?
+          {/* Dispatch Notice Card */}
+          <div className="border border-neutral-800 bg-neutral-900 text-neutral-100 rounded-xl p-6 sm:p-8 space-y-4">
+            <span className="font-mono text-xs uppercase tracking-wider text-red-400 font-semibold block">
+              Fallback Pathway
+            </span>
+            <h3 className="font-display text-2xl font-bold tracking-tightest text-white">
+              Are nearby storage facilities insufficient?
             </h3>
-            <p className="text-sm text-red-100 max-w-xl mx-auto mt-2">
-              Don't lose time traveling to out-of-stock facilities. Dispatch an immediate broadcast to <strong>{compatibleDonors.length} verified compatible donors</strong> right in your neighborhood.
+            <p className="text-xs sm:text-sm text-neutral-300 max-w-xl leading-generous font-sans">
+              Avoid losing time traveling to dry facilities. Dispatch an immediate alert to <strong>{compatibleDonors.length} verified compatible donors</strong> registered in the local grid.
             </p>
-            <button
-              onClick={() => setStep(3)}
-              className="mt-6 px-8 py-3.5 bg-white text-red-600 hover:bg-red-50 font-black rounded-xl text-base shadow-md transition-all hover:scale-105 active:scale-95 flex items-center gap-2 mx-auto"
-            >
-              Search Donors Near You ({compatibleDonors.length} Available)
-              <ChevronRight className="w-5 h-5 text-red-600" />
-            </button>
+            <div className="pt-2">
+              <button
+                onClick={() => setStep(3)}
+                className="px-6 py-3 bg-red-700 hover:bg-red-800 text-white font-semibold rounded text-xs flex items-center gap-2 transition-colors border border-red-600"
+              >
+                Broadcast to Local Donors ({compatibleDonors.length} Available)
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {/* ================= STEP 3: DIRECT DONOR SOS BROADCAST FORM ================= */}
       {step === 3 && (
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-10">
+        <div className="border border-neutral-200 bg-white rounded-xl p-6 sm:p-10 space-y-8">
           <button
             onClick={() => setStep(2)}
-            className="text-xs font-semibold text-slate-500 hover:text-slate-800 flex items-center gap-1 mb-4"
+            className="font-mono text-xs text-neutral-500 hover:text-neutral-900 flex items-center gap-1 transition-colors"
           >
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to Blood Banks
+            <ArrowLeft className="w-3.5 h-3.5" /> Back to Storage Inventory
           </button>
 
-          <div className="max-w-2xl mx-auto">
-            <div className="text-center mb-8">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-red-100 text-red-700 mb-2">
-                Emergency Donor Dispatch
+          <div className="max-w-2xl space-y-6">
+            <div>
+              <span className="font-mono text-xs uppercase tracking-wider text-red-700 font-semibold block mb-1">
+                Emergency Dispatch Form
               </span>
-              <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
-                Broadcast SOS for <span className="text-red-600">{selectedGroup}</span> Blood
+              <h2 className="font-display text-2xl sm:text-3xl font-bold text-neutral-900 tracking-tightest">
+                Broadcast Distress Alert for <span className="text-red-700">{selectedGroup}</span> Blood
               </h2>
-              <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                Enter basic patient coordinates. Our system will format a verified alert and message nearby compatible donors.
+              <p className="text-xs sm:text-sm text-neutral-600 mt-1 leading-generous font-sans">
+                Enter core patient parameters. The platform will format the clinical alert and deliver it via WhatsApp webhook to verified local contacts.
               </p>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-4 font-sans text-xs">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1">
+                <label className="block font-mono uppercase tracking-wider text-neutral-700 mb-1 font-semibold text-[11px]">
                   Patient Name
                 </label>
                 <input
@@ -360,30 +388,30 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
                   value={patientName}
                   onChange={(e) => setPatientName(e.target.value)}
                   placeholder="e.g. Rahul Sharma"
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
+                  className="w-full px-3.5 py-2.5 rounded border border-neutral-300 text-sm focus:border-neutral-900 outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1">
+                  <label className="block font-mono uppercase tracking-wider text-neutral-700 mb-1 font-semibold text-[11px]">
                     Age
                   </label>
                   <input
                     type="number"
                     value={patientAge}
                     onChange={(e) => setPatientAge(Number(e.target.value))}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 outline-none"
+                    className="w-full px-3.5 py-2.5 rounded border border-neutral-300 text-sm focus:border-neutral-900 outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1">
+                  <label className="block font-mono uppercase tracking-wider text-neutral-700 mb-1 font-semibold text-[11px]">
                     Gender
                   </label>
                   <select
                     value={patientGender}
                     onChange={(e) => setPatientGender(e.target.value as any)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 outline-none bg-white"
+                    className="w-full px-3.5 py-2.5 rounded border border-neutral-300 text-sm focus:border-neutral-900 outline-none bg-white"
                   >
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
@@ -394,8 +422,8 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1">
-                    Units Needed
+                  <label className="block font-mono uppercase tracking-wider text-neutral-700 mb-1 font-semibold text-[11px]">
+                    Units Required
                   </label>
                   <input
                     type="number"
@@ -403,67 +431,65 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
                     max={10}
                     value={unitsNeeded}
                     onChange={(e) => setUnitsNeeded(Number(e.target.value))}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 outline-none"
+                    className="w-full px-3.5 py-2.5 rounded border border-neutral-300 text-sm focus:border-neutral-900 outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1">
-                    Emergency Phone
+                  <label className="block font-mono uppercase tracking-wider text-neutral-700 mb-1 font-semibold text-[11px]">
+                    Emergency Attendant Contact
                   </label>
                   <input
                     type="tel"
                     value={contactPhone}
                     onChange={(e) => setContactPhone(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 outline-none"
+                    className="w-full px-3.5 py-2.5 rounded border border-neutral-300 text-sm focus:border-neutral-900 outline-none"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1">
-                  Hospital Name & Location
+                <label className="block font-mono uppercase tracking-wider text-neutral-700 mb-1 font-semibold text-[11px]">
+                  Hospital Facility & Ward
                 </label>
                 <div className="relative">
-                  <Hospital className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                  <Hospital className="w-4 h-4 text-neutral-400 absolute left-3 top-3" />
                   <input
                     type="text"
                     value={hospitalName}
                     onChange={(e) => setHospitalName(e.target.value)}
                     placeholder="e.g. AIIMS Raipur Trauma Center"
-                    className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 outline-none"
+                    className="w-full pl-9 pr-3.5 py-2.5 rounded border border-neutral-300 text-sm focus:border-neutral-900 outline-none"
                   />
                 </div>
               </div>
 
-              {/* Pre-formatted WhatsApp Message Preview */}
-              <div className="mt-6 p-4 bg-emerald-50/70 border border-emerald-200 rounded-xl">
-                <div className="flex items-center justify-between text-xs font-bold text-emerald-800 mb-2">
-                  <span className="flex items-center gap-1.5">
-                    <Send className="w-3.5 h-3.5 text-emerald-600" />
-                    Structured Auto-Generated WhatsApp Broadcast:
+              {/* Structured Message Ledger Preview */}
+              <div className="border border-neutral-200 rounded-lg p-4 bg-neutral-50 space-y-2">
+                <div className="flex items-center justify-between text-neutral-700 font-mono text-[11px]">
+                  <span className="flex items-center gap-1.5 font-bold uppercase tracking-wider">
+                    <Send className="w-3.5 h-3.5 text-neutral-600" />
+                    Structured Dispatch Payload:
                   </span>
-                  <span className="text-[10px] bg-emerald-200/80 px-2 py-0.5 rounded text-emerald-900 font-semibold">
-                    Compatible Types Included
-                  </span>
+                  <span className="text-neutral-500">Auto-Generated</span>
                 </div>
-                <div className="bg-white p-3 rounded-lg border border-emerald-200 text-xs text-slate-800 font-mono whitespace-pre-line shadow-xs">
-                  {`🚨 URGENT BLOOD REQUEST (via Rakshya) 🚨\n`}
+                <div className="bg-white p-3 rounded border border-neutral-200 font-mono text-xs text-neutral-800 whitespace-pre-line leading-relaxed">
+                  {`URGENT BLOOD REQUEST • RAKSHYA DISPATCH\n`}
                   {`Patient: ${patientName} (${patientAge}y, ${patientGender})\n`}
-                  {`Blood Needed: ${selectedGroup} (${unitsNeeded} Unit${unitsNeeded > 1 ? 's' : ''})\n`}
-                  {`Compatible Donor Types: ${compatibleGroups.join(', ')}\n`}
-                  {`Hospital: ${hospitalName}\n`}
+                  {`Blood Type: ${selectedGroup} (${unitsNeeded} Unit${unitsNeeded > 1 ? 's' : ''})\n`}
+                  {`Compatible Groups: ${compatibleGroups.join(', ')}\n`}
+                  {`Facility: ${hospitalName}\n`}
                   {`Contact: ${contactPhone}`}
                 </div>
               </div>
 
-              {/* Broadcast Trigger */}
-              <div className="pt-4 flex flex-col sm:flex-row gap-3">
+              {/* Action Buttons */}
+              <div className="pt-2 flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={handleBroadcastSOS}
-                  className="flex-1 py-3.5 bg-red-600 hover:bg-red-700 text-white font-extrabold text-sm rounded-xl shadow-lg shadow-red-600/30 flex items-center justify-center gap-2 transition-all hover:scale-[1.01]"
+                  className="flex-1 py-3.5 bg-red-700 hover:bg-red-800 text-white font-semibold text-xs rounded flex items-center justify-center gap-2 transition-colors border border-red-600"
                 >
                   <Send className="w-4 h-4" />
-                  Broadcast SOS to {compatibleDonors.length} Nearby Donors
+                  Broadcast Alert to {compatibleDonors.length} Verified Donors
                 </button>
 
                 <a
@@ -478,10 +504,10 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
                   )}
                   target="_blank"
                   rel="noreferrer"
-                  className="py-3.5 px-6 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-sm flex items-center justify-center gap-2 transition-all"
+                  className="py-3.5 px-6 bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-xs rounded flex items-center justify-center gap-2 border border-neutral-800 transition-colors"
                 >
                   <Share2 className="w-4 h-4" />
-                  Send on WhatsApp
+                  Share Direct
                 </a>
               </div>
             </div>
@@ -492,20 +518,19 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
       {/* ================= STEP 4: LIVE SOS MATCH ROOM ================= */}
       {step === 4 && activeSOS && (
         <div className="space-y-6">
-          {/* Active Broadcast Banner */}
-          <div className="bg-slate-900 text-white rounded-2xl p-6 sm:p-8 shadow-xl">
+          {/* Active Broadcast Ledger Banner */}
+          <div className="border border-neutral-800 bg-neutral-900 text-neutral-100 rounded-xl p-6 sm:p-8 space-y-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
-                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-red-500/20 text-red-400 border border-red-500/30">
-                  <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-                  Live Emergency Broadcast Active
+                <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded text-[10px] font-mono uppercase tracking-wider bg-red-950 text-red-400 border border-red-800">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                  Emergency Dispatch Active
                 </span>
-                <h2 className="text-2xl sm:text-3xl font-black mt-2">
-                  Request for {activeSOS.unitsNeeded} Units of{' '}
-                  <span className="text-red-500">{activeSOS.bloodGroup}</span> Blood
+                <h2 className="font-display text-2xl sm:text-3xl font-bold mt-2 text-white tracking-tightest">
+                  Request for {activeSOS.unitsNeeded} Units of {activeSOS.bloodGroup} Blood
                 </h2>
-                <p className="text-xs sm:text-sm text-slate-400 mt-1">
-                  Patient: <strong>{activeSOS.patientName}</strong> • {activeSOS.hospitalName} • Dispatched at {activeSOS.createdAt}
+                <p className="font-mono text-xs text-neutral-400 mt-1">
+                  Patient: {activeSOS.patientName} • {activeSOS.hospitalName} • Dispatched at {activeSOS.createdAt}
                 </p>
               </div>
 
@@ -522,48 +547,48 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
                   )}
                   target="_blank"
                   rel="noreferrer"
-                  className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 transition-colors"
+                  className="px-4 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 font-semibold text-xs rounded flex items-center gap-1.5 border border-neutral-700 transition-colors"
                 >
                   <Share2 className="w-4 h-4" />
-                  Forward to Family WhatsApp
+                  Forward Message
                 </a>
               </div>
             </div>
 
-            {/* Broadcast Metrics */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-6 border-t border-slate-800 text-center">
-              <div className="bg-slate-800/60 p-3 rounded-xl">
-                <div className="text-xs text-slate-400">Target Donors</div>
-                <div className="text-xl font-black text-white">{compatibleDonors.length} Donors</div>
+            {/* Telemetry Metrics */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-neutral-800 font-mono text-xs">
+              <div className="border border-neutral-800 p-3 rounded bg-neutral-950">
+                <span className="text-neutral-500 uppercase tracking-wider text-[10px] block">Target Donors</span>
+                <span className="text-lg font-bold text-white mt-1 block">{compatibleDonors.length}</span>
               </div>
-              <div className="bg-slate-800/60 p-3 rounded-xl">
-                <div className="text-xs text-slate-400">Acceptances</div>
-                <div className="text-xl font-black text-emerald-400">{acceptedDonorIds.length} Accepted</div>
+              <div className="border border-neutral-800 p-3 rounded bg-neutral-950">
+                <span className="text-neutral-500 uppercase tracking-wider text-[10px] block">Responses</span>
+                <span className="text-lg font-bold text-emerald-400 mt-1 block">{acceptedDonorIds.length} Verified</span>
               </div>
-              <div className="bg-slate-800/60 p-3 rounded-xl">
-                <div className="text-xs text-slate-400">Search Radius</div>
-                <div className="text-xl font-black text-blue-400">&lt; 15 km</div>
+              <div className="border border-neutral-800 p-3 rounded bg-neutral-950">
+                <span className="text-neutral-500 uppercase tracking-wider text-[10px] block">Search Radius</span>
+                <span className="text-lg font-bold text-neutral-200 mt-1 block">&lt; 15 km</span>
               </div>
-              <div className="bg-slate-800/60 p-3 rounded-xl">
-                <div className="text-xs text-slate-400">Avg Response Time</div>
-                <div className="text-xl font-black text-amber-400">2.4 mins</div>
+              <div className="border border-neutral-800 p-3 rounded bg-neutral-950">
+                <span className="text-neutral-500 uppercase tracking-wider text-[10px] block">Avg Response</span>
+                <span className="text-lg font-bold text-neutral-200 mt-1 block">2.4 mins</span>
               </div>
             </div>
           </div>
 
           {/* Incoming Responded Donors */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
-            <div className="flex items-center justify-between mb-6">
+          <div className="border border-neutral-200 bg-white rounded-xl p-6 sm:p-8 space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-200 pb-4">
               <div>
-                <h3 className="text-xl font-black text-slate-900">
-                  Verified Responded Donors
+                <h3 className="font-display text-xl sm:text-2xl font-bold text-neutral-900 tracking-tightest">
+                  Verified Responding Donors
                 </h3>
-                <p className="text-xs text-slate-500">
-                  Donors who have passed the 90-day cooldown check and accepted your request.
+                <p className="text-xs text-neutral-600 mt-1 leading-generous font-sans">
+                  Individuals within transit range who have cleared the 90-day cooldown and accepted the emergency alert.
                 </p>
               </div>
 
-              {/* Button to simulate another donor responding */}
+              {/* Simulation Trigger */}
               <button
                 onClick={() => {
                   const nextDonor = compatibleDonors.find(d => !acceptedDonorIds.includes(d.id));
@@ -573,37 +598,35 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
                     alert('All mock eligible donors have responded!');
                   }
                 }}
-                className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
+                className="px-3.5 py-2 bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-semibold rounded flex items-center gap-1.5 transition-colors border border-neutral-800"
               >
-                <ExternalLink className="w-3.5 h-3.5 text-red-400" />
-                Simulate Donor WhatsApp Flow
+                Simulate Recipient Audit View
               </button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3 font-sans">
               {compatibleDonors
                 .filter(d => acceptedDonorIds.includes(d.id))
                 .map((donor) => (
                   <div
                     key={donor.id}
-                    className="border-2 border-emerald-500/40 bg-emerald-50/20 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all"
+                    className="border border-neutral-300 rounded-lg p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-neutral-50"
                   >
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-red-600 text-white font-black flex items-center justify-center text-lg flex-shrink-0 shadow-sm">
+                      <div className="w-12 h-12 rounded border border-neutral-800 bg-neutral-900 text-white font-mono font-bold flex items-center justify-center text-lg flex-shrink-0">
                         {donor.bloodGroup}
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h4 className="font-extrabold text-slate-900 text-base">{donor.name}</h4>
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1">
-                            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                            Eligible & Ready
+                          <h4 className="font-bold text-neutral-900 text-base">{donor.name}</h4>
+                          <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-200">
+                            Screened & Ready
                           </span>
                         </div>
-                        <div className="text-xs text-slate-500 mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
-                          <span>Distance: <strong className="text-slate-800">{donor.distanceKm} km away</strong></span>
+                        <div className="text-xs text-neutral-600 mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono">
+                          <span>Transit: <strong>{donor.distanceKm} km</strong></span>
                           <span>Location: {donor.city}</span>
-                          <span>Total Past Donations: {donor.donationsCount}</span>
+                          <span>Prior Donations: {donor.donationsCount}</span>
                         </div>
                       </div>
                     </div>
@@ -611,16 +634,16 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
                     <div className="flex items-center gap-2 self-end sm:self-center">
                       <a
                         href={`tel:${donor.phone}`}
-                        className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl flex items-center gap-1.5 shadow-sm transition-colors"
+                        className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold rounded flex items-center gap-1.5 border border-emerald-600 transition-colors"
                       >
                         <Phone className="w-3.5 h-3.5" />
                         Call Donor
                       </a>
                       <a
-                        href={`https://wa.me/${donor.phone.replace(/[^0-9]/g, '')}?text=Hello%20${donor.name},%20we%20received%20your%20acceptance%20on%20Rakshya%20for%20${activeSOS.patientName}.%20Thank%20you%20so%20much.`}
+                        href={`https://wa.me/${donor.phone.replace(/[^0-9]/g, '')}?text=Hello%20${donor.name},%20we%20received%20your%20acceptance%20on%20Rakshya%20for%20${activeSOS.patientName}.%20Thank%20you.`}
                         target="_blank"
                         rel="noreferrer"
-                        className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl flex items-center gap-1.5 transition-colors"
+                        className="px-4 py-2 bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-semibold rounded flex items-center gap-1.5 border border-neutral-800 transition-colors"
                       >
                         WhatsApp
                       </a>

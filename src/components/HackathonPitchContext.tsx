@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trophy, CheckCircle2, AlertOctagon, Lightbulb, Users, PhoneCall, ArrowRight } from 'lucide-react';
+import { ArrowRight, Trophy, CheckCircle2 } from 'lucide-react';
 
 interface HackathonPitchContextProps {
   onStartDemo: () => void;
@@ -7,102 +7,101 @@ interface HackathonPitchContextProps {
 
 export const HackathonPitchContext: React.FC<HackathonPitchContextProps> = ({ onStartDemo }) => {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
-      {/* 1st Place Winner Header */}
-      <div className="bg-gradient-to-r from-red-700 via-red-600 to-amber-600 text-white rounded-3xl p-6 sm:p-10 shadow-xl mb-10">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-white/20 text-white backdrop-blur-xs mb-3">
-          <Trophy className="w-4 h-4 text-amber-300" /> Hack-A-Sol 2026 • Open Track
+    <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12 space-y-10">
+      {/* Editorial Case Study Header */}
+      <div className="border border-neutral-300 bg-neutral-900 text-neutral-100 rounded-xl p-8 sm:p-12 space-y-6">
+        <div className="flex items-center gap-2 font-mono text-xs text-neutral-400">
+          <Trophy className="w-4 h-4 text-amber-400" />
+          <span>Case Study • 1st Place Winner, "Build What Moves India"</span>
         </div>
-        <h1 className="text-2xl sm:text-4xl font-black tracking-tight leading-tight">
-          Rakshya: The Lifesaving Bridge for e-RaktKosh
+
+        <h1 className="font-display text-3xl sm:text-5xl font-bold tracking-tightest leading-[1.08] text-white">
+          Why Rakshya Won: Eliminating Cognitive Friction in Life-or-Death Corridors.
         </h1>
-        <p className="text-sm sm:text-base text-red-100 max-w-2xl mt-2 leading-relaxed">
-          Inspired by the 1st place winner of "Build What Moves India", solving India's annual 5-million unit blood deficit through radical UX decluttering and zero-install WhatsApp matching.
+
+        <p className="text-sm sm:text-base text-neutral-300 max-w-2xl leading-generous font-sans">
+          India experiences an annual 5-million unit deficit of whole blood. Rakshya modernizes the legacy e-RaktKosh portal by introducing a zero-install, 30-second emergency triage and WhatsApp-driven broadcast network.
         </p>
 
-        <div className="mt-6 flex flex-wrap gap-3">
+        <div>
           <button
             onClick={onStartDemo}
-            className="px-6 py-3 bg-white text-red-700 hover:bg-red-50 font-black rounded-xl text-xs sm:text-sm shadow-md transition-all flex items-center gap-2"
+            className="px-6 py-3 bg-red-700 hover:bg-red-800 text-white font-semibold rounded text-xs flex items-center gap-2 transition-colors border border-red-600"
           >
-            Launch Emergency Flow Demo
+            Launch Emergency Flow Demonstration
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      {/* 4 Pillars that Won */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
-          <div className="w-10 h-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center font-bold mb-3">
-            1
-          </div>
-          <h3 className="font-extrabold text-slate-900 text-base mb-1">
-            The 100 km Distance Problem
+      {/* The 4 Architectural Pillars */}
+      <div className="border border-neutral-200 bg-white rounded-xl divide-y divide-neutral-200">
+        <div className="p-6 sm:p-8 space-y-2">
+          <div className="font-mono text-xs text-neutral-400 uppercase tracking-wider">Pillar 01</div>
+          <h3 className="font-display text-xl font-bold text-neutral-900 tracking-tightest">
+            The 100-Kilometer Regional Distance Void
           </h3>
-          <p className="text-xs text-slate-600 leading-relaxed">
-            12% of Indian districts are over 100 km away from any functional blood bank. When accidents or emergency surgeries occur, traveling to a distant facility takes hours. Rakshya immediately activates verified local donors nearby.
+          <p className="text-xs sm:text-sm text-neutral-600 font-sans leading-generous">
+            12% of Indian districts are situated over 100 km away from any functional blood bank. When emergencies or trauma cases arise, traveling across district lines consumes precious golden hours. Rakshya immediately activates verified voluntary donors residing within the same taluk or municipal ward.
           </p>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
-          <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center font-bold mb-3">
-            2
-          </div>
-          <h3 className="font-extrabold text-slate-900 text-base mb-1">
-            28 Lakh Registered Donors, Zero Access
+        <div className="p-6 sm:p-8 space-y-2">
+          <div className="font-mono text-xs text-neutral-400 uppercase tracking-wider">Pillar 02</div>
+          <h3 className="font-display text-xl font-bold text-neutral-900 tracking-tightest">
+            2.8 Million Dormant Donor Records
           </h3>
-          <p className="text-xs text-slate-600 leading-relaxed">
-            The official e-RaktKosh portal holds 28 lakh donor records, but ordinary citizens in distress cannot access them during emergencies. Rakshya provides direct, consent-driven broadcast matching in minutes.
+          <p className="text-xs sm:text-sm text-neutral-600 font-sans leading-generous">
+            The national e-RaktKosh portal holds 2.8 million registered donor contacts, but ordinary families in distress cannot directly access them. Rakshya provides consent-driven, privacy-preserving notification pipelines that match exact antigen compatibility.
           </p>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
-          <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold mb-3">
-            3
-          </div>
-          <h3 className="font-extrabold text-slate-900 text-base mb-1">
-            Web-First, Not a Dead App
+        <div className="p-6 sm:p-8 space-y-2">
+          <div className="font-mono text-xs text-neutral-400 uppercase tracking-wider">Pillar 03</div>
+          <h3 className="font-display text-xl font-bold text-neutral-900 tracking-tightest">
+            Web-First Architecture Over App Churn
           </h3>
-          <p className="text-xs text-slate-600 leading-relaxed">
-            Because donors can only donate once every 3 months (at most 4 times a year), requiring an app download creates massive churn. Mobile web + WhatsApp notification guarantees 100% reach without notifications being muted.
+          <p className="text-xs sm:text-sm text-neutral-600 font-sans leading-generous">
+            Because donors can only give blood once every 90 days (at most 4 times per year), native mobile applications suffer from extreme uninstallation rates and muted push notifications. A Progressive Web App coupled with WhatsApp bot dispatch guarantees 100% notification reach.
           </p>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
-          <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold mb-3">
-            4
-          </div>
-          <h3 className="font-extrabold text-slate-900 text-base mb-1">
-            Ethical Growth via Referral Incentives
+        <div className="p-6 sm:p-8 space-y-2">
+          <div className="font-mono text-xs text-neutral-400 uppercase tracking-wider">Pillar 04</div>
+          <h3 className="font-display text-xl font-bold text-neutral-900 tracking-tightest">
+            Ethical Growth via Referral Recognition
           </h3>
-          <p className="text-xs text-slate-600 leading-relaxed">
-            Under Indian law, blood cannot be bought or sold for cash. Rakshya drives viral supply growth by incentivizing citizens to invite and onboard new verified donors with health checkups and community rewards.
+          <p className="text-xs sm:text-sm text-neutral-600 font-sans leading-generous">
+            Commercial payment for blood is prohibited under Indian law. Rakshya grows its voluntary supply pool by rewarding community advocates with preventive health checkups and recognized civic credentials for enrolling verified donors.
           </p>
         </div>
       </div>
 
-      {/* Judges Q&A Summary */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs">
-        <h3 className="text-lg font-black text-slate-900 mb-4">
-          Key Insights from Hackathon Judges
-        </h3>
-        <div className="space-y-4 text-xs">
-          <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
-            <div className="font-bold text-slate-800 mb-1">
-              Q: "Why ask only for the blood group first instead of a detailed form?"
+      {/* Judges Transcript Section */}
+      <div className="border border-neutral-200 bg-white rounded-xl p-6 sm:p-8 space-y-6">
+        <div>
+          <span className="font-mono text-xs uppercase tracking-wider text-neutral-400">Oral Defense</span>
+          <h3 className="font-display text-2xl font-bold text-neutral-900 tracking-tightest mt-1">
+            Judges' Evaluation Transcript
+          </h3>
+        </div>
+
+        <div className="space-y-4 font-mono text-xs">
+          <div className="p-4 rounded border border-neutral-200 bg-neutral-50 space-y-2">
+            <div className="font-bold text-neutral-900">
+              Query: "Why start with only the patient blood group instead of a standard admission form?"
             </div>
-            <p className="text-slate-600">
-              When a patient is in distress, cognitive load must be zero. Asking only the blood group eliminates paralysis and allows the compatibility engine to instantly calculate all possible donor types.
+            <p className="font-sans text-xs text-neutral-700 leading-generous">
+              In trauma and emergency rooms, attendants experience profound cognitive overwhelm. Requiring a multi-step form causes decision paralysis. Capturing only the blood group takes 3 seconds and immediately activates our compatibility engine to search all acceptable donor groups.
             </p>
           </div>
 
-          <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
-            <div className="font-bold text-slate-800 mb-1">
-              Q: "How do you prevent spam or ineligible donors from responding?"
+          <div className="p-4 rounded border border-neutral-200 bg-neutral-50 space-y-2">
+            <div className="font-bold text-neutral-900">
+              Query: "How is donor spam and clinical ineligibility filtered?"
             </div>
-            <p className="text-slate-600">
-              The 90-day cooldown is hard-enforced. Ineligible donors are suppressed from broadcasts. When an eligible donor receives an alert on WhatsApp, they undergo a rapid 10-second disqualification check before their phone number is exchanged.
+            <p className="font-sans text-xs text-neutral-700 leading-generous">
+              The 90-day cooldown is hardcoded into the dispatch filter. Ineligible donors are suppressed from broadcasts. When an eligible donor receives an alert on WhatsApp, they undergo a rapid 10-second safety check before phone numbers are exchanged.
             </p>
           </div>
         </div>

@@ -49,21 +49,21 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
     markersRef.current.forEach((m) => m.remove());
     markersRef.current = [];
 
-    // Custom Blue Marker for User Location
+    // Custom Marker for User Location
     const userIcon = L.divIcon({
       className: 'custom-user-pin',
       html: `
-        <div style="background-color: #2563eb; width: 22px; height: 22px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 10px rgba(37,99,235,0.7); display: flex; align-items: center; justify-content: center;">
-          <div style="width: 6px; height: 6px; background-color: white; border-radius: 50%;"></div>
+        <div style="background-color: #0f172a; width: 18px; height: 18px; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center;">
+          <div style="width: 6px; height: 6px; background-color: #38bdf8; border-radius: 50%;"></div>
         </div>
       `,
-      iconSize: [22, 22],
-      iconAnchor: [11, 11],
+      iconSize: [18, 18],
+      iconAnchor: [9, 9],
     });
 
     const userMarker = L.marker([userLocation.lat, userLocation.lng], { icon: userIcon })
       .addTo(map)
-      .bindPopup(`<strong>Your Location</strong><br/>${userLocation.label}`);
+      .bindPopup(`<strong>Active Reference Point</strong><br/>${userLocation.label}`);
     markersRef.current.push(userMarker);
 
     // Red Markers for Blood Banks
@@ -72,12 +72,12 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
       const bankIcon = L.divIcon({
         className: 'custom-bank-pin',
         html: `
-          <div style="background-color: ${isSelected ? '#991b1b' : '#dc2626'}; width: ${isSelected ? '32px' : '26px'}; height: ${isSelected ? '32px' : '26px'}; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: ${isSelected ? '14px' : '11px'};">
+          <div style="background-color: ${isSelected ? '#7f1d1d' : '#991b1b'}; width: ${isSelected ? '28px' : '22px'}; height: ${isSelected ? '28px' : '22px'}; border-radius: 4px; border: 1.5px solid white; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-family: monospace; font-size: ${isSelected ? '12px' : '10px'};">
             +
           </div>
         `,
-        iconSize: isSelected ? [32, 32] : [26, 26],
-        iconAnchor: isSelected ? [16, 16] : [13, 13],
+        iconSize: isSelected ? [28, 28] : [22, 22],
+        iconAnchor: isSelected ? [14, 14] : [11, 11],
       });
 
       const totalStock = Object.values(bank.stock).reduce((a, b) => a + b, 0);
@@ -85,21 +85,21 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
       const marker = L.marker([bank.latitude, bank.longitude], { icon: bankIcon })
         .addTo(map)
         .bindPopup(`
-          <div style="font-family: system-ui; max-width: 220px; font-size: 12px; color: #1e293b;">
-            <div style="font-size: 9px; font-weight: bold; text-transform: uppercase; color: #dc2626; margin-bottom: 2px;">
+          <div style="font-family: 'Plus Jakarta Sans', system-ui, sans-serif; max-width: 220px; font-size: 12px; color: #1e293b;">
+            <div style="font-size: 9px; font-family: monospace; font-weight: bold; text-transform: uppercase; color: #991b1b; margin-bottom: 2px;">
               ${bank.category} • ${bank.is24x7 ? '24x7' : 'Standard'}
             </div>
             <strong style="font-size: 13px; color: #0f172a; display: block; margin-bottom: 4px;">${bank.name}</strong>
             <p style="margin: 0 0 6px 0; color: #64748b; font-size: 11px;">${bank.address}</p>
-            <div style="background: #f1f5f9; padding: 4px 6px; border-radius: 6px; margin-bottom: 6px; font-weight: bold;">
-              Total Units Available: <span style="color: #16a34a;">${totalStock} Units</span>
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 4px 6px; border-radius: 4px; margin-bottom: 6px; font-family: monospace; font-size: 11px;">
+              Total In Stock: <span style="color: #15803d; font-weight: bold;">${totalStock} Units</span>
             </div>
             <div style="display: flex; gap: 4px;">
-              <a href="https://www.google.com/maps/dir/?api=1&destination=${bank.latitude},${bank.longitude}" target="_blank" style="display: inline-block; background: #dc2626; color: white; text-decoration: none; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold;">
-                Google Maps ↗
+              <a href="https://www.google.com/maps/dir/?api=1&destination=${bank.latitude},${bank.longitude}" target="_blank" style="display: inline-block; background: #991b1b; color: white; text-decoration: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-family: monospace; font-weight: bold;">
+                Maps ↗
               </a>
-              <a href="tel:${bank.phone}" style="display: inline-block; background: #0f172a; color: white; text-decoration: none; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold;">
-                Call
+              <a href="tel:${bank.phone}" style="display: inline-block; background: #0f172a; color: white; text-decoration: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-family: monospace; font-weight: bold;">
+                Helpline
               </a>
             </div>
           </div>
@@ -118,11 +118,11 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
   }, [userLocation, bloodBanks, selectedBankId]);
 
   return (
-    <div className="relative w-full h-[400px] sm:h-[460px] rounded-2xl overflow-hidden border border-slate-200 shadow-sm z-0">
+    <div className="relative w-full h-[400px] sm:h-[460px] rounded-lg overflow-hidden border border-neutral-300 z-0">
       <div ref={mapContainerRef} className="w-full h-full" />
-      <div className="absolute top-3 right-3 z-[1000] bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-200 shadow-md text-[11px] font-bold text-slate-700 flex items-center gap-2">
-        <span className="w-2.5 h-2.5 rounded-full bg-blue-600"></span> Your GPS
-        <span className="w-2.5 h-2.5 rounded-full bg-red-600 ml-2"></span> Blood Center
+      <div className="absolute top-3 right-3 z-[1000] bg-white px-3 py-1.5 rounded border border-neutral-300 text-[10px] font-mono text-neutral-800 flex items-center gap-2">
+        <span className="w-2 h-2 rounded-full bg-slate-900"></span> Active Reference
+        <span className="w-2 h-2 rounded bg-red-800 ml-2"></span> Storage Center
       </div>
     </div>
   );

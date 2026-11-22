@@ -76,7 +76,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans selection:bg-red-500 selection:text-white">
+    <div className="min-h-screen bg-[#fafaf9] flex flex-col font-sans selection:bg-red-700 selection:text-white text-neutral-900">
       {/* Navigation */}
       <Navbar
         activeTab={activeTab}
@@ -142,37 +142,37 @@ export function App() {
         )}
       </main>
 
-      {/* Quick Navigation Floating Bar */}
-      <div className="fixed bottom-3 left-1/2 -translate-x-1/2 z-40 bg-slate-900/95 text-white backdrop-blur-md px-4 py-2 rounded-full border border-slate-700 shadow-2xl flex items-center gap-2 sm:gap-3 text-xs">
+      {/* Quick Navigation Dock */}
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 bg-neutral-900 text-neutral-100 px-5 py-2.5 rounded-full border border-neutral-700 flex items-center gap-3 text-xs font-mono">
         <button
           onClick={() => setActiveTab('home')}
-          className={`flex items-center gap-1 font-medium ${activeTab === 'home' ? 'text-white font-bold underline' : 'text-slate-400 hover:text-white'}`}
+          className={`flex items-center gap-1.5 ${activeTab === 'home' ? 'text-white font-bold underline' : 'text-neutral-400 hover:text-white'}`}
         >
           <Home className="w-3.5 h-3.5" />
-          Home
+          Masthead
         </button>
-        <span className="text-slate-600">|</span>
+        <span className="text-neutral-700">|</span>
         <button
           onClick={() => handleStartEmergency()}
-          className={`flex items-center gap-1 font-bold ${activeTab === 'emergency' ? 'text-red-400 underline' : 'text-red-400 hover:text-red-300'}`}
+          className={`flex items-center gap-1.5 font-bold ${activeTab === 'emergency' ? 'text-red-400 underline' : 'text-red-400 hover:text-red-300'}`}
         >
           <Droplet className="w-3.5 h-3.5 fill-red-500 stroke-none" />
           Find Blood
         </button>
-        <span className="text-slate-600">|</span>
+        <span className="text-neutral-700">|</span>
         <button
           onClick={() => setActiveTab('sync')}
-          className={`flex items-center gap-1 font-medium ${activeTab === 'sync' ? 'text-blue-400 font-bold underline' : 'text-slate-400 hover:text-blue-300'}`}
+          className={`flex items-center gap-1.5 ${activeTab === 'sync' ? 'text-white font-bold underline' : 'text-neutral-400 hover:text-white'}`}
         >
-          <Database className="w-3.5 h-3.5" />
-          Scraper Sync
+          <Database className="w-3.5 h-3.5 text-neutral-400" />
+          Data Bridge
         </button>
-        <span className="text-slate-600">|</span>
+        <span className="text-neutral-700">|</span>
         <button
           onClick={() => setActiveTab('banks')}
-          className={`font-medium ${activeTab === 'banks' ? 'text-white font-bold underline' : 'text-slate-400 hover:text-white'}`}
+          className={`${activeTab === 'banks' ? 'text-white font-bold underline' : 'text-neutral-400 hover:text-white'}`}
         >
-          Banks & Map
+          Storage Map
         </button>
       </div>
 
@@ -185,15 +185,16 @@ export function App() {
         onDonorAccept={handleDonorAccept}
       />
 
-      {/* Footer */}
-      <footer className="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      {/* Editorial Colophon / Footer */}
+      <footer className="bg-white border-t border-neutral-200 py-8 text-neutral-600 font-sans text-xs">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span className="font-extrabold text-slate-900">Rakshya</span>
-            <span>• Hack-A-Sol 2026 (IIIT Naya Raipur) • Open Track</span>
+            <span className="font-display font-bold text-base text-neutral-900 tracking-tightest">Rakshya</span>
+            <span className="text-neutral-400">•</span>
+            <span className="font-mono text-[11px] text-neutral-500">Hack-A-Sol 2026 • IIIT Naya Raipur • Open Track</span>
           </div>
-          <div className="text-slate-400 text-[11px]">
-            In emergencies, every second counts. Bridging e-RaktKosh with verified local donors.
+          <div className="text-neutral-500 font-mono text-[11px]">
+            National Transfusion Modernization Protocol • Bridging e-RaktKosh with verified local donors
           </div>
         </div>
       </footer>

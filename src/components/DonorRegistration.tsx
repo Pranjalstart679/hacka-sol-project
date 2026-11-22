@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BloodGroup, Donor } from '../types';
 import { calculateDonorEligibility } from '../lib/compatibility';
-import { HeartHandshake, CheckCircle2, ShieldCheck, MessageSquare, Gift, ArrowRight } from 'lucide-react';
+import { CheckCircle2, ShieldCheck, MessageSquare, ArrowRight, UserCheck } from 'lucide-react';
 
 interface DonorRegistrationProps {
   onDonorRegistered: (newDonor: Donor) => void;
@@ -50,26 +50,27 @@ export const DonorRegistration: React.FC<DonorRegistrationProps> = ({
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12">
-      <div className="text-center max-w-xl mx-auto mb-8">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-red-100 text-red-700 mb-2">
-          <HeartHandshake className="w-3.5 h-3.5" /> Direct Citizen Donor Registry
+    <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12 space-y-8">
+      {/* Editorial Header */}
+      <div className="border border-neutral-200 bg-white rounded-xl p-6 sm:p-10 space-y-3">
+        <span className="font-mono text-xs uppercase tracking-wider text-red-700 font-semibold block">
+          Civic Enrollment Protocol
         </span>
-        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-          Join the Life-Saving Donor Network
+        <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-neutral-900 tracking-tightest leading-[1.1]">
+          Join the Citizen Donor Network
         </h1>
-        <p className="text-xs sm:text-sm text-slate-500 mt-1">
-          Zero annoying app downloads. You will only receive a quiet WhatsApp notification if a patient in your vicinity has a critical compatible emergency.
+        <p className="text-sm text-neutral-600 max-w-2xl leading-generous font-sans">
+          Zero app downloads. You receive a direct notification via WhatsApp only when a critical patient within your immediate transit radius requires your compatible blood type.
         </p>
       </div>
 
       {!isSuccess ? (
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-10">
-          <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="border border-neutral-200 bg-white rounded-xl p-6 sm:p-10">
+          <form onSubmit={handleSubmit} className="space-y-6 font-sans text-xs">
             {/* Full Name */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1">
-                Full Name
+              <label className="block font-mono uppercase tracking-wider text-neutral-700 mb-1 font-semibold text-[11px]">
+                Full Legal Name
               </label>
               <input
                 type="text"
@@ -77,25 +78,25 @@ export const DonorRegistration: React.FC<DonorRegistrationProps> = ({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Tanmay Sharma"
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 outline-none"
+                className="w-full px-3.5 py-2.5 rounded border border-neutral-300 text-sm focus:border-neutral-900 outline-none"
               />
             </div>
 
             {/* Blood Group */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-2">
-                Your Blood Group
+              <label className="block font-mono uppercase tracking-wider text-neutral-700 mb-2 font-semibold text-[11px]">
+                Blood Group (Confirmed or on Record)
               </label>
-              <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
+              <div className="grid grid-cols-4 sm:grid-cols-8 gap-2 font-mono">
                 {BLOOD_GROUPS.map((g) => (
                   <button
                     type="button"
                     key={g}
                     onClick={() => setBloodGroup(g)}
-                    className={`py-2 rounded-xl text-sm font-black border transition-all ${
+                    className={`py-2 rounded text-xs font-bold border transition-colors ${
                       bloodGroup === g
-                        ? 'border-red-600 bg-red-50 text-red-700 shadow-xs scale-105'
-                        : 'border-slate-200 text-slate-700 hover:bg-slate-50'
+                        ? 'border-neutral-900 bg-neutral-900 text-white'
+                        : 'border-neutral-200 text-neutral-700 hover:border-neutral-400 bg-neutral-50'
                     }`}
                   >
                     {g}
@@ -104,130 +105,145 @@ export const DonorRegistration: React.FC<DonorRegistrationProps> = ({
               </div>
             </div>
 
-            {/* Mobile / WhatsApp Number */}
+            {/* Contact & City */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1">
+                <label className="block font-mono uppercase tracking-wider text-neutral-700 mb-1 font-semibold text-[11px]">
                   WhatsApp Contact Number
                 </label>
-                <div className="relative">
-                  <input
-                    type="tel"
-                    required
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="98765 43210"
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 outline-none"
-                  />
-                </div>
-                <p className="text-[11px] text-slate-400 mt-1">Used strictly for emergency dispatch.</p>
+                <input
+                  type="tel"
+                  required
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="98765 43210"
+                  className="w-full px-3.5 py-2.5 rounded border border-neutral-300 text-sm focus:border-neutral-900 outline-none font-mono"
+                />
+                <p className="text-[10px] text-neutral-400 mt-1 font-mono">Used solely for urgent emergency dispatch.</p>
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1">
-                  City / Neighborhood
+                <label className="block font-mono uppercase tracking-wider text-neutral-700 mb-1 font-semibold text-[11px]">
+                  City / Residential Area
                 </label>
                 <input
                   type="text"
                   required
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
-                  placeholder="e.g. Raipur, Chhattisgarh"
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 outline-none"
+                  placeholder="e.g. Nava Raipur, Chhattisgarh"
+                  className="w-full px-3.5 py-2.5 rounded border border-neutral-300 text-sm focus:border-neutral-900 outline-none"
                 />
               </div>
             </div>
 
-            {/* Past Donation Cooldown Info */}
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
-              <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-800">
+            {/* Cooldown Protection Check */}
+            <div className="p-4 bg-neutral-50 rounded border border-neutral-200 space-y-3 font-mono text-xs">
+              <label className="flex items-center gap-2 cursor-pointer text-neutral-800 font-semibold">
                 <input
                   type="checkbox"
                   checked={hasDonatedBefore}
                   onChange={(e) => setHasDonatedBefore(e.target.checked)}
-                  className="rounded text-red-600 focus:ring-red-500 w-4 h-4"
+                  className="rounded text-neutral-900 focus:ring-0 w-4 h-4 border-neutral-300"
                 />
-                <span>I have donated blood in the past</span>
+                <span>I have previously donated whole blood</span>
               </label>
 
               {hasDonatedBefore && (
-                <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-1">
-                    Date of Last Donation (to calculate 90-day cooldown):
+                <div className="pt-2 border-t border-neutral-200">
+                  <label className="block text-neutral-600 mb-1 text-[11px]">
+                    Approximate Date of Last Donation:
                   </label>
                   <input
                     type="date"
                     value={lastDonated}
                     onChange={(e) => setLastDonated(e.target.value)}
-                    className="px-3 py-2 rounded-lg border border-slate-300 text-xs text-slate-800 outline-none"
+                    className="px-3 py-1.5 rounded border border-neutral-300 text-xs text-neutral-900 outline-none bg-white font-mono"
                   />
+                  <p className="text-[10px] text-neutral-500 mt-1">
+                    The system suppresses donor notifications for 90 days after any donation per ICMR guidelines.
+                  </p>
                 </div>
               )}
             </div>
 
-            {/* Benefits reminder */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-600">
-              <div className="flex items-center gap-2 p-3 bg-red-50/50 rounded-xl border border-red-100">
-                <ShieldCheck className="w-4 h-4 text-red-600 flex-shrink-0" />
-                <span>Automatic 90-day cooldown enforcement</span>
+            {/* Clinical Guardrails */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-neutral-600 font-mono">
+              <div className="p-3 border border-neutral-200 rounded flex items-center gap-2 bg-neutral-50">
+                <ShieldCheck className="w-4 h-4 text-neutral-600 flex-shrink-0" />
+                <span>Automated 90-day cooldown enforcement</span>
               </div>
-              <div className="flex items-center gap-2 p-3 bg-emerald-50/50 rounded-xl border border-emerald-100">
-                <MessageSquare className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                <span>One-tap WhatsApp emergency alert with Accept/Decline</span>
+              <div className="p-3 border border-neutral-200 rounded flex items-center gap-2 bg-neutral-50">
+                <MessageSquare className="w-4 h-4 text-neutral-600 flex-shrink-0" />
+                <span>Single-tap WhatsApp response model</span>
               </div>
             </div>
 
             <button
               type="submit"
-              className="w-full py-3.5 bg-red-600 hover:bg-red-700 text-white font-extrabold text-sm rounded-xl shadow-lg shadow-red-600/30 transition-all hover:scale-[1.01]"
+              className="w-full py-3.5 bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-xs rounded transition-colors border border-neutral-800"
             >
-              Complete Registration & Get Referral Code
+              Enroll on National Civic Roster
             </button>
           </form>
         </div>
       ) : (
-        /* Success Screen */
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 text-center space-y-6">
-          <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto">
-            <CheckCircle2 className="w-10 h-10" />
-          </div>
-
-          <div>
-            <h2 className="text-2xl font-black text-slate-900">
-              Welcome to Rakshya, {createdDonor?.name}!
+        /* Formal Civic Credential Display */
+        <div className="border border-neutral-200 bg-white rounded-xl p-8 sm:p-12 space-y-6">
+          <div className="border-b border-neutral-200 pb-6">
+            <span className="font-mono text-xs uppercase tracking-wider text-emerald-700 font-semibold block mb-1">
+              Enrollment Confirmed
+            </span>
+            <h2 className="font-display text-3xl font-bold text-neutral-900 tracking-tightest">
+              Verified Citizen Credential: {createdDonor?.name}
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 max-w-md mx-auto mt-1">
-              Your profile is verified. If a patient near {createdDonor?.city} urgently requires <strong>{createdDonor?.bloodGroup}</strong> blood, you will be notified via WhatsApp.
+            <p className="text-xs sm:text-sm text-neutral-600 mt-2 font-sans leading-generous">
+              Your profile is now active on the local emergency response grid. You will only receive a contact notification if a patient within transit distance of {createdDonor?.city} requires compatible {createdDonor?.bloodGroup} blood.
             </p>
           </div>
 
-          {/* Referral Incentive Card */}
-          <div className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-2xl text-left max-w-lg mx-auto">
-            <div className="flex items-center gap-2 text-amber-900 font-extrabold text-sm mb-1">
-              <Gift className="w-5 h-5 text-amber-600" />
-              Your Unique Donor Growth Code:
+          {/* Digital Credential Document */}
+          <div className="border border-neutral-800 bg-neutral-900 text-neutral-100 rounded-lg p-6 font-mono text-xs space-y-4">
+            <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
+              <span className="text-neutral-400 uppercase tracking-wider text-[10px]">National Blood Transfusion Network</span>
+              <span className="text-emerald-400 font-bold">STATUS: ACTIVE</span>
             </div>
-            <p className="text-xs text-amber-800">
-              Indian law prohibits paying for blood, but you earn rewards by onboarding new verified donors to expand the lifesaving supply.
-            </p>
-            <div className="mt-3 p-3 bg-white border border-amber-300 rounded-xl font-mono text-center text-sm font-black text-slate-900 tracking-wider">
-              {createdDonor?.referralCode}
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <span className="text-neutral-500 uppercase text-[10px] block">Citizen Donor</span>
+                <span className="text-neutral-200 font-bold text-sm">{createdDonor?.name}</span>
+              </div>
+              <div>
+                <span className="text-neutral-500 uppercase text-[10px] block">Blood Group</span>
+                <span className="text-red-400 font-bold text-sm">{createdDonor?.bloodGroup}</span>
+              </div>
+              <div>
+                <span className="text-neutral-500 uppercase text-[10px] block">Assigned Territory</span>
+                <span className="text-neutral-200">{createdDonor?.city}</span>
+              </div>
+              <div>
+                <span className="text-neutral-500 uppercase text-[10px] block">Advocacy Referral Code</span>
+                <span className="text-neutral-200 font-bold">{createdDonor?.referralCode}</span>
+              </div>
             </div>
+          </div>
+
+          <div className="pt-2 flex flex-col sm:flex-row gap-3">
             <button
               onClick={onGoToRewards}
-              className="mt-4 w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-colors"
+              className="px-6 py-3 bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-xs rounded flex items-center justify-center gap-2 border border-neutral-800 transition-colors"
             >
-              View Referral Rewards & Rewards Milestones
+              View Community Advocacy Milestones
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
+            <button
+              onClick={() => setIsSuccess(false)}
+              className="px-6 py-3 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-semibold text-xs rounded border border-neutral-200 transition-colors"
+            >
+              Enroll Another Citizen
+            </button>
           </div>
-
-          <button
-            onClick={() => setIsSuccess(false)}
-            className="text-xs font-bold text-slate-500 hover:text-slate-800"
-          >
-            Register Another Donor
-          </button>
         </div>
       )}
     </div>

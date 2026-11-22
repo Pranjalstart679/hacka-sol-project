@@ -45,27 +45,27 @@ export const PWAInstallBanner: React.FC = () => {
   if (isInstalled || !showBanner) return null;
 
   return (
-    <div className="fixed top-18 right-4 z-50 max-w-sm bg-white border-2 border-red-600 rounded-2xl p-4 shadow-2xl flex items-start gap-3 animate-in slide-in-from-top-4">
-      <div className="w-10 h-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center flex-shrink-0">
-        <Smartphone className="w-5 h-5" />
+    <div className="fixed top-20 right-4 z-50 max-w-sm bg-neutral-900 text-neutral-100 border border-neutral-700 rounded-lg p-4 flex items-start gap-3">
+      <div className="w-8 h-8 rounded border border-neutral-700 bg-neutral-800 text-neutral-300 flex items-center justify-center flex-shrink-0 mt-0.5">
+        <Download className="w-4 h-4" />
       </div>
-      <div className="flex-1 text-xs">
-        <strong className="text-slate-900 font-extrabold block text-sm">
-          Install Rakshya App
+      <div className="flex-1 text-xs font-sans">
+        <strong className="text-white font-bold block text-sm font-display tracking-tightest">
+          Add Rakshya to Home Screen
         </strong>
-        <p className="text-slate-500 mt-0.5">
-          Install as a standalone mobile app for instant 1-tap emergency access with zero app-store download.
+        <p className="text-neutral-400 mt-0.5 leading-relaxed text-[11px]">
+          Install as a lightweight progressive web application for instant emergency access.
         </p>
-        <div className="mt-2.5 flex items-center gap-2">
+        <div className="mt-2.5 flex items-center gap-2 font-mono text-xs">
           <button
             onClick={handleInstallClick}
-            className="px-3.5 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg flex items-center gap-1 transition-colors"
+            className="px-3 py-1 bg-red-700 hover:bg-red-800 text-white font-semibold rounded flex items-center gap-1 transition-colors border border-red-600"
           >
-            <Download className="w-3.5 h-3.5" /> Install App
+            Install
           </button>
           <button
             onClick={() => setShowBanner(false)}
-            className="px-2 py-1.5 text-slate-400 hover:text-slate-600 text-[11px]"
+            className="px-2 py-1 text-neutral-400 hover:text-white text-[11px]"
           >
             Dismiss
           </button>
@@ -73,7 +73,7 @@ export const PWAInstallBanner: React.FC = () => {
       </div>
       <button
         onClick={() => setShowBanner(false)}
-        className="text-slate-400 hover:text-slate-600 p-0.5"
+        className="text-neutral-400 hover:text-white p-0.5"
       >
         <X className="w-4 h-4" />
       </button>

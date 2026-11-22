@@ -6,6 +6,16 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        display: ['Newsreader', 'Georgia', 'serif'],
+        sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+      },
+      letterSpacing: {
+        tightest: '-0.03em',
+      },
+      lineHeight: {
+        generous: '1.6',
+      },
       colors: {
         brand: {
           50: '#fef2f2',

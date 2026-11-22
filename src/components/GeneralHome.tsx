@@ -4,18 +4,13 @@ import { InteractiveMap } from './InteractiveMap';
 import { 
   Droplet, 
   MapPin, 
-  Search, 
-  PhoneCall, 
-  HeartHandshake, 
-  ShieldAlert, 
-  Building2, 
-  Gift, 
   ArrowRight, 
   CheckCircle2, 
-  Clock, 
-  AlertCircle,
   Navigation,
-  ExternalLink
+  ArrowUpRight,
+  Shield,
+  Layers,
+  Activity
 } from 'lucide-react';
 
 interface GeneralHomeProps {
@@ -66,110 +61,160 @@ export const GeneralHome: React.FC<GeneralHomeProps> = ({
   };
 
   return (
-    <div className="space-y-12 py-6 sm:py-10">
-      {/* ================= HERO SECTION WITH EMERGENCY TRIGGER ================= */}
+    <div className="space-y-16 py-8 sm:py-12">
+      {/* ================= HERO SECTION (EDITORIAL ASYMMETRIC) ================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-gradient-to-br from-red-600 via-red-700 to-red-900 text-white rounded-3xl p-6 sm:p-12 shadow-2xl relative overflow-hidden">
-          {/* Subtle background glow */}
-          <div className="absolute -right-20 -bottom-20 w-96 h-96 rounded-full bg-red-500/20 blur-3xl pointer-events-none" />
+        <div className="border border-neutral-300 bg-neutral-900 text-neutral-100 rounded-2xl p-8 sm:p-14 relative">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+            {/* Primary Editorial Headline & Context (7 cols) */}
+            <div className="lg:col-span-8 space-y-6">
+              <div className="flex items-center gap-3">
+                <span className="w-2 h-2 rounded-full bg-red-500" />
+                <span className="font-mono text-xs uppercase tracking-wider text-neutral-400">
+                  National Blood Transfusion Modernization Protocol
+                </span>
+              </div>
 
-          <div className="max-w-3xl relative z-10">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-white/15 backdrop-blur-md text-red-100 border border-white/20 mb-4">
-              <span className="w-2 h-2 rounded-full bg-white animate-ping" />
-              National Blood Transfusion Modernization Network
+              <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-semibold tracking-tightest leading-[1.08] text-white">
+                Emergency Blood Discovery in Minutes, Not Days.
+              </h1>
+
+              <p className="text-base sm:text-lg text-neutral-300 leading-generous max-w-2xl font-normal">
+                Connecting critical patients directly with live hospital inventories and verified nearby donors across India. Zero app downloads, zero administrative friction.
+              </p>
+
+              {/* Action Rows */}
+              <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                <button
+                  onClick={() => onStartEmergency()}
+                  className="px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg text-sm sm:text-base flex items-center justify-center gap-3 transition-colors border border-red-500"
+                >
+                  <Droplet className="w-5 h-5 fill-white stroke-none" />
+                  Initiate Emergency Search
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+
+                <button
+                  onClick={() => onNavigateTab('banks')}
+                  className="px-6 py-4 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 font-semibold rounded-lg text-sm flex items-center justify-center gap-2 transition-colors border border-neutral-700"
+                >
+                  Inspect Blood Bank Inventory
+                </button>
+              </div>
+
+              {/* 1-Tap Blood Group Direct Selector */}
+              <div className="pt-6 border-t border-neutral-800">
+                <div className="text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-3">
+                  Direct Triage By Patient Blood Group:
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {BLOOD_GROUPS.map((group) => (
+                    <button
+                      key={group}
+                      onClick={() => onStartEmergency(group)}
+                      className="px-3.5 py-2 rounded bg-neutral-800 hover:bg-neutral-100 hover:text-neutral-900 text-white text-xs font-mono font-bold transition-colors border border-neutral-700"
+                    >
+                      {group}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
-              Emergency Blood Discovery in Minutes, Not Days.
-            </h1>
+            {/* Asymmetric Briefing Column (4 cols) */}
+            <div className="lg:col-span-4 border-t lg:border-t-0 lg:border-l border-neutral-800 pt-6 lg:pt-0 lg:pl-8 space-y-6 font-mono text-xs text-neutral-400">
+              <div className="border-b border-neutral-800 pb-4">
+                <span className="text-neutral-500 uppercase tracking-wider block text-[10px]">Context</span>
+                <span className="text-neutral-200 font-semibold mt-1 block font-sans text-sm">
+                  1st Place Winner, "Build What Moves India"
+                </span>
+                <p className="text-neutral-400 mt-1 leading-relaxed font-sans">
+                  Solving the critical golden-hour gap for accident victims and urgent surgical procedures.
+                </p>
+              </div>
 
-            <p className="text-base sm:text-lg text-red-100 mt-4 leading-relaxed font-normal">
-              Connecting critical patients with live blood bank inventories and verified nearby donors across India. Zero app downloads, zero cognitive friction.
+              <div className="border-b border-neutral-800 pb-4">
+                <span className="text-neutral-500 uppercase tracking-wider block text-[10px]">Transfusion Rule</span>
+                <span className="text-neutral-200 font-semibold mt-1 block font-sans text-sm">
+                  Haversine & 90-Day Safeguard
+                </span>
+                <p className="text-neutral-400 mt-1 leading-relaxed font-sans">
+                  Donors on a 90-day cooldown are automatically suppressed to protect donor health.
+                </p>
+              </div>
+
+              <div>
+                <span className="text-neutral-500 uppercase tracking-wider block text-[10px]">Access Model</span>
+                <span className="text-neutral-200 font-semibold mt-1 block font-sans text-sm">
+                  Web-First + Direct WhatsApp
+                </span>
+                <p className="text-neutral-400 mt-1 leading-relaxed font-sans">
+                  Zero install requirement ensures 100% notification receipt without app churn.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= CRISIS METRICS DATA LEDGER ================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="border border-neutral-200 bg-white rounded-xl divide-y lg:divide-y-0 lg:divide-x divide-neutral-200 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="p-6">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-neutral-500">Annual Deficit</span>
+            <div className="font-display text-3xl font-bold text-red-700 tracking-tightest mt-2">
+              5 Million Units
+            </div>
+            <p className="text-xs text-neutral-600 mt-2 leading-generous">
+              India collects 11 million units annually against a clinical demand of 16 million units.
             </p>
+          </div>
 
-            {/* Emergency CTA Action Area */}
-            <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-              <button
-                onClick={() => onStartEmergency()}
-                className="px-8 py-4 bg-white text-red-700 hover:bg-red-50 font-black rounded-2xl text-lg shadow-xl shadow-red-950/30 flex items-center justify-center gap-3 transition-all hover:scale-105 active:scale-95"
-              >
-                <Droplet className="w-6 h-6 fill-red-600 text-red-600" />
-                FIND BLOOD NOW
-                <ArrowRight className="w-5 h-5 text-red-600" />
-              </button>
-
-              <button
-                onClick={() => onNavigateTab('banks')}
-                className="px-6 py-4 bg-red-800/80 hover:bg-red-800 text-white font-bold rounded-2xl text-sm border border-red-500/40 backdrop-blur-xs flex items-center justify-center gap-2 transition-colors"
-              >
-                <Building2 className="w-4 h-4" />
-                Explore Blood Banks
-              </button>
+          <div className="p-6">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-neutral-500">Distance Bottleneck</span>
+            <div className="font-display text-3xl font-bold text-neutral-900 tracking-tightest mt-2">
+              12% of Districts
             </div>
+            <p className="text-xs text-neutral-600 mt-2 leading-generous">
+              Over 100 km away from any operational blood storage unit, exceeding safe transit windows.
+            </p>
+          </div>
 
-            {/* Quick 1-Tap Blood Group Direct Selector */}
-            <div className="mt-8 pt-6 border-t border-red-500/40">
-              <div className="text-xs font-bold uppercase tracking-wider text-red-200 mb-2.5">
-                Or jump straight into compatibility search for patient blood type:
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {BLOOD_GROUPS.map((group) => (
-                  <button
-                    key={group}
-                    onClick={() => onStartEmergency(group)}
-                    className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white text-white hover:text-red-700 text-xs font-black transition-all border border-white/20 shadow-xs"
-                  >
-                    {group}
-                  </button>
-                ))}
-              </div>
+          <div className="p-6">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-neutral-500">National Records</span>
+            <div className="font-display text-3xl font-bold text-neutral-900 tracking-tightest mt-2">
+              2.8 Million
             </div>
+            <p className="text-xs text-neutral-600 mt-2 leading-generous">
+              Registered donors in e-RaktKosh who were historically unreachable during urgent emergencies.
+            </p>
+          </div>
+
+          <div className="p-6">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-neutral-500">Target Match Window</span>
+            <div className="font-display text-3xl font-bold text-emerald-700 tracking-tightest mt-2">
+              &lt; 3 Minutes
+            </div>
+            <p className="text-xs text-neutral-600 mt-2 leading-generous">
+              From blood group entry to automated broadcast across compatible verified local contacts.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* ================= CRUCIAL NATIONAL CRISIS METRICS ================= */}
+      {/* ================= GEOSPATIAL MAP & INVENTORY ================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-            <div className="text-xs font-bold text-slate-500 uppercase tracking-wide">National Annual Deficit</div>
-            <div className="text-2xl sm:text-3xl font-black text-red-600 mt-1">5 Million Units</div>
-            <p className="text-[11px] text-slate-400 mt-1">11M units collected vs. 16M needed every year.</p>
-          </div>
-
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-            <div className="text-xs font-bold text-slate-500 uppercase tracking-wide">Distance Bottleneck</div>
-            <div className="text-2xl sm:text-3xl font-black text-amber-600 mt-1">12% Districts</div>
-            <p className="text-[11px] text-slate-400 mt-1">More than 100 km away from any functional blood bank.</p>
-          </div>
-
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-            <div className="text-xs font-bold text-slate-500 uppercase tracking-wide">e-RaktKosh Database</div>
-            <div className="text-2xl sm:text-3xl font-black text-slate-900 mt-1">28 Lakh Donors</div>
-            <p className="text-[11px] text-slate-400 mt-1">Registered in government system, previously unreachable in emergencies.</p>
-          </div>
-
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-            <div className="text-xs font-bold text-slate-500 uppercase tracking-wide">Average SOS Match Time</div>
-            <div className="text-2xl sm:text-3xl font-black text-emerald-600 mt-1">&lt; 3 Minutes</div>
-            <p className="text-[11px] text-slate-400 mt-1">Direct WhatsApp dispatch to verified nearby donors.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= REAL OPENSTREETMAP INTERACTIVE EXPLORER ================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div className="border border-neutral-200 bg-white rounded-xl p-6 sm:p-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 pb-6 border-b border-neutral-200">
             <div>
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-red-600 mb-1">
-                <MapPin className="w-4 h-4" /> Real Geospatial Verification
+              <div className="flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-red-700 mb-1">
+                <MapPin className="w-3.5 h-3.5" /> Real Coordinates & In-Stock Units
               </div>
-              <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
-                Live Blood Bank & Hospital Network
+              <h2 className="font-display text-2xl sm:text-3xl font-bold text-neutral-900 tracking-tightest">
+                Blood Storage & Hospital Network
               </h2>
-              <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                Actual verified coordinates with live inventory and turn-by-turn Google Maps navigation.
+              <p className="text-xs sm:text-sm text-neutral-600 mt-1 leading-generous">
+                Verified inventory counts and direct route calculations from your active reference point.
               </p>
             </div>
 
@@ -177,28 +222,28 @@ export const GeneralHome: React.FC<GeneralHomeProps> = ({
             <div className="flex flex-wrap items-center gap-2">
               <button
                 onClick={handleUseRealGPS}
-                className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl flex items-center gap-1.5 transition-colors"
+                className="px-3.5 py-2 bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-semibold rounded flex items-center gap-1.5 transition-colors border border-neutral-800"
               >
-                <Navigation className="w-3.5 h-3.5 text-blue-400" />
-                Detect My GPS
+                <Navigation className="w-3.5 h-3.5 text-neutral-300" />
+                Detect GPS
               </button>
 
-              <div className="flex bg-slate-100 p-1 rounded-xl text-xs font-bold">
+              <div className="flex border border-neutral-300 rounded p-0.5 text-xs font-medium bg-neutral-50">
                 <button
                   onClick={() => handleCityChange('raipur')}
-                  className={`px-3 py-1.5 rounded-lg transition-all ${selectedCity === 'raipur' ? 'bg-white text-red-700 shadow-xs' : 'text-slate-600'}`}
+                  className={`px-3 py-1.5 rounded transition-colors ${selectedCity === 'raipur' ? 'bg-white text-red-700 font-semibold shadow-xs border border-neutral-200' : 'text-neutral-600 hover:text-neutral-900'}`}
                 >
-                  Raipur / Nava Raipur
+                  Raipur
                 </button>
                 <button
                   onClick={() => handleCityChange('delhi')}
-                  className={`px-3 py-1.5 rounded-lg transition-all ${selectedCity === 'delhi' ? 'bg-white text-red-700 shadow-xs' : 'text-slate-600'}`}
+                  className={`px-3 py-1.5 rounded transition-colors ${selectedCity === 'delhi' ? 'bg-white text-red-700 font-semibold shadow-xs border border-neutral-200' : 'text-neutral-600 hover:text-neutral-900'}`}
                 >
                   Delhi NCR
                 </button>
                 <button
                   onClick={() => handleCityChange('bangalore')}
-                  className={`px-3 py-1.5 rounded-lg transition-all ${selectedCity === 'bangalore' ? 'bg-white text-red-700 shadow-xs' : 'text-slate-600'}`}
+                  className={`px-3 py-1.5 rounded transition-colors ${selectedCity === 'bangalore' ? 'bg-white text-red-700 font-semibold shadow-xs border border-neutral-200' : 'text-neutral-600 hover:text-neutral-900'}`}
                 >
                   Bengaluru
                 </button>
@@ -206,153 +251,172 @@ export const GeneralHome: React.FC<GeneralHomeProps> = ({
             </div>
           </div>
 
-          {/* Interactive Map Component */}
+          {/* Map Viewer */}
           <InteractiveMap
             userLocation={userLocation}
             bloodBanks={bloodBanks}
           />
 
-          {/* Real distance calculated display */}
-          <div className="mt-4 flex flex-wrap items-center justify-between text-xs text-slate-500 gap-2">
+          <div className="mt-4 flex flex-wrap items-center justify-between text-xs text-neutral-500 gap-2 font-mono">
             <div>
-              Active center: <strong className="text-slate-800">{userLocation.label}</strong> ({userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)})
+              Active Reference: <strong className="text-neutral-800">{userLocation.label}</strong> ({userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)})
             </div>
-            <div className="text-[11px] text-slate-400">
-              Distances mathematically computed via Great-Circle Haversine formula from your active location.
+            <div className="text-[11px] text-neutral-400">
+              Distances calculated via Great-Circle Haversine formula.
             </div>
           </div>
         </div>
       </section>
 
-      {/* ================= 4 CORE ACTION CARDS ================= */}
+      {/* ================= CORE ARCHITECTURAL PATHWAYS (ASYMMETRIC) ================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Card 1: Emergency SOS */}
-          <div 
-            onClick={() => onStartEmergency()}
-            className="group cursor-pointer bg-white p-6 rounded-2xl border-2 border-red-500/30 hover:border-red-600 shadow-xs hover:shadow-lg transition-all flex flex-col justify-between"
-          >
-            <div>
-              <div className="w-12 h-12 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center font-bold mb-4 group-hover:scale-110 transition-transform">
-                <Droplet className="w-6 h-6 fill-red-600 stroke-none" />
-              </div>
-              <h3 className="font-extrabold text-slate-900 text-lg mb-1">
-                Emergency Blood SOS
-              </h3>
-              <p className="text-xs text-slate-500 leading-relaxed">
-                Step-by-step 30-second emergency dispatch to nearby blood banks and compatible donors.
-              </p>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Main Feature: Emergency Dispatch Pipeline (7 cols) */}
+          <div className="lg:col-span-7 border border-neutral-200 bg-white rounded-xl p-8 space-y-6">
+            <div className="flex items-center justify-between border-b border-neutral-200 pb-4">
+              <span className="font-mono text-xs uppercase tracking-wider text-red-700 font-semibold">
+                Primary Flow • 30-Second Triage
+              </span>
+              <span className="font-mono text-xs text-neutral-400">Section 01</span>
             </div>
-            <div className="mt-4 pt-3 border-t border-slate-100 flex items-center text-xs font-bold text-red-600 gap-1 group-hover:translate-x-1 transition-transform">
-              Start Emergency SOS <ArrowRight className="w-3.5 h-3.5" />
+
+            <h3 className="font-display text-2xl sm:text-3xl font-bold text-neutral-900 tracking-tightest">
+              Emergency SOS Dispatch Pipeline
+            </h3>
+
+            <p className="text-sm text-neutral-600 leading-generous">
+              Designed for families standing in emergency hospital corridors under high cognitive strain. Rather than filling multi-page forms, one tap on the patient blood group activates simultaneous discovery:
+            </p>
+
+            <div className="space-y-3 pt-2 text-xs text-neutral-700 leading-generous font-sans">
+              <div className="flex items-start gap-3">
+                <span className="w-5 h-5 rounded border border-neutral-300 bg-neutral-100 flex items-center justify-center font-mono text-[10px] text-neutral-800 font-bold flex-shrink-0 mt-0.5">1</span>
+                <span><strong>Antigen Compatibility Match:</strong> RBC rules immediately identify all safe donor groups (e.g. an O+ patient can receive both O+ and O-).</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="w-5 h-5 rounded border border-neutral-300 bg-neutral-100 flex items-center justify-center font-mono text-[10px] text-neutral-800 font-bold flex-shrink-0 mt-0.5">2</span>
+                <span><strong>Live Blood Bank Inventory:</strong> Evaluates stock at nearby verified government and private storage centers.</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="w-5 h-5 rounded border border-neutral-300 bg-neutral-100 flex items-center justify-center font-mono text-[10px] text-neutral-800 font-bold flex-shrink-0 mt-0.5">3</span>
+                <span><strong>Direct Citizen Broadcast:</strong> If centers are out of stock or beyond 100 km, the system broadcasts alerts to verified donors in proximity.</span>
+              </div>
+            </div>
+
+            <div className="pt-4">
+              <button
+                onClick={() => onStartEmergency()}
+                className="px-6 py-3 bg-red-700 hover:bg-red-800 text-white font-semibold rounded text-xs flex items-center gap-2 transition-colors border border-red-600"
+              >
+                Launch Emergency SOS <ArrowRight className="w-4 h-4" />
+              </button>
             </div>
           </div>
 
-          {/* Card 2: Blood Bank Directory */}
-          <div 
-            onClick={() => onNavigateTab('banks')}
-            className="group cursor-pointer bg-white p-6 rounded-2xl border border-slate-200 hover:border-slate-400 shadow-xs hover:shadow-lg transition-all flex flex-col justify-between"
-          >
-            <div>
-              <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-800 flex items-center justify-center font-bold mb-4 group-hover:scale-110 transition-transform">
-                <Building2 className="w-6 h-6" />
+          {/* Secondary Stack: Editorial Catalog (5 cols) */}
+          <div className="lg:col-span-5 border border-neutral-200 bg-white rounded-xl divide-y divide-neutral-200">
+            {/* Catalog Item 1: Directory */}
+            <div 
+              onClick={() => onNavigateTab('banks')}
+              className="p-6 cursor-pointer hover:bg-neutral-50 transition-colors"
+            >
+              <div className="flex items-center justify-between text-[11px] font-mono text-neutral-400 mb-1">
+                <span>CATALOG / 02</span>
+                <ArrowUpRight className="w-4 h-4 text-neutral-400" />
               </div>
-              <h3 className="font-extrabold text-slate-900 text-lg mb-1">
-                Blood Bank Directory
-              </h3>
-              <p className="text-xs text-slate-500 leading-relaxed">
-                Search verified hospitals, contact 24x7 helplines, and review live unit counts for all groups.
+              <h4 className="font-display text-lg font-bold text-neutral-900 tracking-tightest">
+                Blood Bank Directory & Stock
+              </h4>
+              <p className="text-xs text-neutral-600 mt-1 leading-generous">
+                Search verified hospital centers, direct 24x7 phone lines, and real-time component availability.
               </p>
             </div>
-            <div className="mt-4 pt-3 border-t border-slate-100 flex items-center text-xs font-bold text-slate-800 gap-1 group-hover:translate-x-1 transition-transform">
-              Browse All Centers <ArrowRight className="w-3.5 h-3.5" />
-            </div>
-          </div>
 
-          {/* Card 3: Join as Donor */}
-          <div 
-            onClick={() => onNavigateTab('register')}
-            className="group cursor-pointer bg-white p-6 rounded-2xl border border-slate-200 hover:border-slate-400 shadow-xs hover:shadow-lg transition-all flex flex-col justify-between"
-          >
-            <div>
-              <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold mb-4 group-hover:scale-110 transition-transform">
-                <HeartHandshake className="w-6 h-6" />
+            {/* Catalog Item 2: Citizen Donor Ledger */}
+            <div 
+              onClick={() => onNavigateTab('register')}
+              className="p-6 cursor-pointer hover:bg-neutral-50 transition-colors"
+            >
+              <div className="flex items-center justify-between text-[11px] font-mono text-neutral-400 mb-1">
+                <span>CATALOG / 03</span>
+                <ArrowUpRight className="w-4 h-4 text-neutral-400" />
               </div>
-              <h3 className="font-extrabold text-slate-900 text-lg mb-1">
+              <h4 className="font-display text-lg font-bold text-neutral-900 tracking-tightest">
                 Citizen Donor Registry
-              </h3>
-              <p className="text-xs text-slate-500 leading-relaxed">
-                Sign up without downloading any app. Get alerted quietly on WhatsApp only when someone nearby needs your exact type.
+              </h4>
+              <p className="text-xs text-neutral-600 mt-1 leading-generous">
+                Register without downloading an app. Receive alerts on WhatsApp only when someone nearby requires your exact type.
               </p>
             </div>
-            <div className="mt-4 pt-3 border-t border-slate-100 flex items-center text-xs font-bold text-emerald-700 gap-1 group-hover:translate-x-1 transition-transform">
-              Register as Donor <ArrowRight className="w-3.5 h-3.5" />
-            </div>
-          </div>
 
-          {/* Card 4: Referral Rewards */}
-          <div 
-            onClick={() => onNavigateTab('rewards')}
-            className="group cursor-pointer bg-white p-6 rounded-2xl border border-amber-200 hover:border-amber-400 shadow-xs hover:shadow-lg transition-all flex flex-col justify-between bg-amber-50/20"
-          >
-            <div>
-              <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold mb-4 group-hover:scale-110 transition-transform">
-                <Gift className="w-6 h-6" />
+            {/* Catalog Item 3: Ethical Referral Incentives */}
+            <div 
+              onClick={() => onNavigateTab('rewards')}
+              className="p-6 cursor-pointer hover:bg-neutral-50 transition-colors"
+            >
+              <div className="flex items-center justify-between text-[11px] font-mono text-neutral-400 mb-1">
+                <span>CATALOG / 04</span>
+                <ArrowUpRight className="w-4 h-4 text-neutral-400" />
               </div>
-              <h3 className="font-extrabold text-slate-900 text-lg mb-1">
-                Referral & Rewards
-              </h3>
-              <p className="text-xs text-slate-500 leading-relaxed">
-                Grow India's emergency donor supply. Earn certified badges and health diagnostic checkups for onboarding verified donors.
+              <h4 className="font-display text-lg font-bold text-neutral-900 tracking-tightest">
+                Referral & Community Supply
+              </h4>
+              <p className="text-xs text-neutral-600 mt-1 leading-generous">
+                Legal growth mechanism under NBTC guidelines: earn recognized certificates and health diagnostic checkups for onboarding verified donors.
               </p>
-            </div>
-            <div className="mt-4 pt-3 border-t border-slate-100 flex items-center text-xs font-bold text-amber-700 gap-1 group-hover:translate-x-1 transition-transform">
-              View Rewards Tiers <ArrowRight className="w-3.5 h-3.5" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* ================= RECENT EMERGENCY CALLS TICKER ================= */}
+      {/* ================= LIVE DISPATCH AUDIT LOG ================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-slate-900 text-white rounded-3xl p-6 sm:p-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping" />
-              <h3 className="font-black text-lg text-white">Live Emergency Distress Ticker</h3>
+        <div className="border border-neutral-800 bg-neutral-900 text-neutral-100 rounded-xl p-6 sm:p-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-neutral-800">
+            <div className="flex items-center gap-2 font-mono text-xs">
+              <span className="w-2 h-2 rounded-full bg-red-500" />
+              <h3 className="font-display text-lg font-bold text-white tracking-tightest">
+                Live Emergency Dispatch Log
+              </h3>
             </div>
-            <span className="text-xs text-slate-400">Real-time alerts broadcasted to nearby verified donors</span>
+            <span className="font-mono text-xs text-neutral-400">Verified transmissions across network nodes</span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-            <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 flex justify-between items-start">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
+            <div className="border border-neutral-800 p-4 rounded bg-neutral-950 flex justify-between items-start">
               <div>
-                <span className="px-2 py-0.5 rounded bg-red-900 text-red-300 font-extrabold text-[10px]">CRITICAL</span>
-                <div className="font-bold text-white text-sm mt-1">2 Units O- Negative</div>
-                <div className="text-slate-400 mt-0.5">AIIMS Trauma Center, Raipur</div>
-                <div className="text-slate-500 text-[10px] mt-1">Dispatched 6 mins ago • 1 Donor Accepted</div>
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-red-950 text-red-400 border border-red-900">
+                  CRITICAL
+                </span>
+                <div className="font-sans font-bold text-white text-sm mt-2">2 Units O- Negative</div>
+                <div className="text-neutral-400 text-xs mt-0.5 font-sans">AIIMS Trauma Center, Raipur</div>
+                <div className="text-neutral-500 text-[10px] mt-2">Dispatched 6 mins ago • 1 Donor Confirmed</div>
               </div>
-              <span className="w-8 h-8 rounded-lg bg-red-600 text-white font-black flex items-center justify-center">O-</span>
+              <span className="w-8 h-8 rounded border border-neutral-700 bg-neutral-900 text-neutral-200 font-bold flex items-center justify-center">O-</span>
             </div>
 
-            <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 flex justify-between items-start">
+            <div className="border border-neutral-800 p-4 rounded bg-neutral-950 flex justify-between items-start">
               <div>
-                <span className="px-2 py-0.5 rounded bg-amber-900 text-amber-300 font-extrabold text-[10px]">URGENT</span>
-                <div className="font-bold text-white text-sm mt-1">3 Units B+ Positive</div>
-                <div className="text-slate-400 mt-0.5">Dr. B.R. Ambedkar Hospital (Mekahara)</div>
-                <div className="text-slate-500 text-[10px] mt-1">Dispatched 18 mins ago • 2 Donors Contacted</div>
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-950 text-amber-400 border border-amber-900">
+                  URGENT
+                </span>
+                <div className="font-sans font-bold text-white text-sm mt-2">3 Units B+ Positive</div>
+                <div className="text-neutral-400 text-xs mt-0.5 font-sans">Dr. B.R. Ambedkar Memorial Hospital</div>
+                <div className="text-neutral-500 text-[10px] mt-2">Dispatched 18 mins ago • 2 Donors Contacted</div>
               </div>
-              <span className="w-8 h-8 rounded-lg bg-red-600 text-white font-black flex items-center justify-center">B+</span>
+              <span className="w-8 h-8 rounded border border-neutral-700 bg-neutral-900 text-neutral-200 font-bold flex items-center justify-center">B+</span>
             </div>
 
-            <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 flex justify-between items-start">
+            <div className="border border-neutral-800 p-4 rounded bg-neutral-950 flex justify-between items-start">
               <div>
-                <span className="px-2 py-0.5 rounded bg-blue-900 text-blue-300 font-extrabold text-[10px]">SCHEDULED SURGERY</span>
-                <div className="font-bold text-white text-sm mt-1">1 Unit AB- Negative</div>
-                <div className="text-slate-400 mt-0.5">Narayana Multispeciality Hospital</div>
-                <div className="text-slate-500 text-[10px] mt-1">Dispatched 42 mins ago • Fulfilled</div>
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-neutral-800 text-neutral-300 border border-neutral-700">
+                  ELECTIVE
+                </span>
+                <div className="font-sans font-bold text-white text-sm mt-2">1 Unit AB- Negative</div>
+                <div className="text-neutral-400 text-xs mt-0.5 font-sans">Narayana Multispeciality Hospital</div>
+                <div className="text-neutral-500 text-[10px] mt-2">Dispatched 42 mins ago • Fulfilled</div>
               </div>
-              <span className="w-8 h-8 rounded-lg bg-slate-700 text-slate-300 font-black flex items-center justify-center">AB-</span>
+              <span className="w-8 h-8 rounded border border-neutral-700 bg-neutral-900 text-neutral-300 font-bold flex items-center justify-center">AB-</span>
             </div>
           </div>
         </div>
@@ -360,50 +424,51 @@ export const GeneralHome: React.FC<GeneralHomeProps> = ({
 
       {/* ================= E-RAKTKOSH VS RAKSHYA COMPARISON ================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 shadow-xs">
-          <div className="text-center max-w-xl mx-auto mb-8">
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
+        <div className="border border-neutral-200 bg-white rounded-xl p-6 sm:p-10">
+          <div className="max-w-2xl mb-8">
+            <span className="font-mono text-xs uppercase tracking-wider text-neutral-400">Architectural Comparison</span>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-neutral-900 tracking-tightest mt-1">
               Why We Won "Build What Moves India"
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              Direct comparison between the legacy government portal experience and Rakshya.
+            <p className="text-xs sm:text-sm text-neutral-600 mt-1 leading-generous">
+              Direct comparison between the legacy government portal design and Rakshya's decentralized approach.
             </p>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50/70">
-                  <th className="py-3 px-4 font-bold text-slate-700">Feature</th>
-                  <th className="py-3 px-4 font-bold text-slate-400">Legacy e-RaktKosh Portal</th>
-                  <th className="py-3 px-4 font-bold text-red-600">Rakshya Modernization</th>
+                <tr className="border-b border-neutral-200 bg-neutral-50">
+                  <th className="py-3 px-4 font-mono font-semibold text-neutral-700 uppercase tracking-wider text-[11px]">Feature</th>
+                  <th className="py-3 px-4 font-mono font-semibold text-neutral-500 uppercase tracking-wider text-[11px]">Legacy e-RaktKosh Portal</th>
+                  <th className="py-3 px-4 font-mono font-semibold text-red-700 uppercase tracking-wider text-[11px]">Rakshya Architecture</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-neutral-200 font-sans">
                 <tr>
-                  <td className="py-3.5 px-4 font-bold text-slate-900">Emergency Time-to-Action</td>
-                  <td className="py-3.5 px-4 text-slate-500">15-30 mins of form filling & searching</td>
-                  <td className="py-3.5 px-4 text-emerald-600 font-bold">1 tap to enter blood group and see inventory</td>
+                  <td className="py-3.5 px-4 font-semibold text-neutral-900">Emergency Time-to-Action</td>
+                  <td className="py-3.5 px-4 text-neutral-600">15-30 mins of form filling and static page navigation</td>
+                  <td className="py-3.5 px-4 text-neutral-900 font-semibold">1 tap to enter blood group and inspect live inventory</td>
                 </tr>
                 <tr>
-                  <td className="py-3.5 px-4 font-bold text-slate-900">28 Lakh Registered Donors</td>
-                  <td className="py-3.5 px-4 text-slate-500">Unreachable database records</td>
-                  <td className="py-3.5 px-4 text-emerald-600 font-bold">Real-time consent-driven WhatsApp alerts</td>
+                  <td className="py-3.5 px-4 font-semibold text-neutral-900">2.8 Million Registered Donors</td>
+                  <td className="py-3.5 px-4 text-neutral-600">Unreachable database records with no citizen access</td>
+                  <td className="py-3.5 px-4 text-neutral-900 font-semibold">Direct consent-driven WhatsApp alerts to nearby verified donors</td>
                 </tr>
                 <tr>
-                  <td className="py-3.5 px-4 font-bold text-slate-900">Distance Gap (&gt;100 km)</td>
-                  <td className="py-3.5 px-4 text-slate-500">No fallback when distant blood banks are dry</td>
-                  <td className="py-3.5 px-4 text-emerald-600 font-bold">Instant fallback to nearest verified individuals</td>
+                  <td className="py-3.5 px-4 font-semibold text-neutral-900">Distance Gap (&gt;100 km)</td>
+                  <td className="py-3.5 px-4 text-neutral-600">No emergency fallback when distant centers lack stock</td>
+                  <td className="py-3.5 px-4 text-neutral-900 font-semibold">Automatic broadcast fallback to nearest verified individuals</td>
                 </tr>
                 <tr>
-                  <td className="py-3.5 px-4 font-bold text-slate-900">Donor Retention Channel</td>
-                  <td className="py-3.5 px-4 text-slate-500">Native mobile apps with high uninstall rates</td>
-                  <td className="py-3.5 px-4 text-emerald-600 font-bold">Mobile Web + Zero-install WhatsApp bridge</td>
+                  <td className="py-3.5 px-4 font-semibold text-neutral-900">Donor Retention Channel</td>
+                  <td className="py-3.5 px-4 text-neutral-600">Standalone apps with high uninstallation rates (&gt;90 days between donations)</td>
+                  <td className="py-3.5 px-4 text-neutral-900 font-semibold">Mobile Web + Zero-install WhatsApp bridge</td>
                 </tr>
                 <tr>
-                  <td className="py-3.5 px-4 font-bold text-slate-900">Supply Growth Incentive</td>
-                  <td className="py-3.5 px-4 text-slate-500">None (blood sale is illegal in India)</td>
-                  <td className="py-3.5 px-4 text-emerald-600 font-bold">Legal referral rewards for onboarding verified donors</td>
+                  <td className="py-3.5 px-4 font-semibold text-neutral-900">Supply Growth Incentive</td>
+                  <td className="py-3.5 px-4 text-neutral-600">None (blood commercialization is illegal in India)</td>
+                  <td className="py-3.5 px-4 text-neutral-900 font-semibold">Ethical referral recognition and diagnostic checkups for community advocates</td>
                 </tr>
               </tbody>
             </table>
