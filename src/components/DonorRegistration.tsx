@@ -194,7 +194,7 @@ export const DonorRegistration: React.FC<DonorRegistrationProps> = ({
 
           <div>
             <h2 className="text-2xl font-black text-slate-900">
-              Welcome to RakhtKhoj, {createdDonor?.name}!
+              Welcome to Rakshya, {createdDonor?.name}!
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 max-w-md mx-auto mt-1">
               Your profile is verified. If a patient near {createdDonor?.city} urgently requires <strong>{createdDonor?.bloodGroup}</strong> blood, you will be notified via WhatsApp.

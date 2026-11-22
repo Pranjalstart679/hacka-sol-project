@@ -131,7 +131,7 @@ export const DataSyncEngine: React.FC<DataSyncEngineProps> = ({ onSyncComplete }
           <Database className="w-3.5 h-3.5 text-blue-600" /> Data Pipeline & Scraper Engine
         </span>
         <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-          How RakhtKhoj Scrapes & Indexes Donors
+          How Rakshya Scrapes & Indexes Donors
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 mt-2">
           In the original pitch, e-RaktKosh holds 28 lakh registered donors, but citizens cannot access them in emergencies. Here is how our data ingestion pipeline bridges that gap.

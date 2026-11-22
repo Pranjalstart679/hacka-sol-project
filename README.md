@@ -1,4 +1,4 @@
-# RakhtKhoj - Emergency Blood Discovery & Live Donor Network
+# Rakshya - Emergency Blood Discovery & Live Donor Network
 
 Transforming e-RaktKosh into an immediate, zero-friction emergency network for patients and local donors.
 
@@ -14,9 +14,9 @@ Inspired by the 1st place winner ("RakhtKhoj" by Team Raktosh) at the "Build Wha
 - **Annual Deficit:** India collects ~11 million units of blood annually against a demand of ~16 million units (a 5 million unit annual deficit).
 - **Mobile App Fatigue:** Requiring donors to install a standalone application fails because donors can only donate once every 90 days. Standalone apps suffer massive churn and muted notifications.
 
-## The Solution: RakhtKhoj
+## The Solution: Rakshya
 
-RakhtKhoj operates as a lightweight, mobile-first progressive web platform coupled with instant WhatsApp dispatch.
+Rakshya operates as a lightweight, mobile-first progressive web platform coupled with instant WhatsApp dispatch.
 
 1. **Zero-Cognitive-Load Patient Flow:**
    - Single immediate question: "What is the blood group of the patient?"
@@ -31,7 +31,7 @@ RakhtKhoj operates as a lightweight, mobile-first progressive web platform coupl
    - Automatic suppression of donors who have donated within the last 90 days.
 4. **Referral-Driven Growth (Legal Incentive Mechanism):**
    - Direct payment for blood is prohibited under Indian law (National Blood Transfusion Council regulations).
-   - RakhtKhoj provides referral incentives (health checkups, certified badges) for onboarding verified donors, expanding the national supply pool ethically.
+   - Rakshya provides referral incentives (health checkups, certified badges) for onboarding verified donors, expanding the national supply pool ethically.
 
 ## Technical Architecture
 

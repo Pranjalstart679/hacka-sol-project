@@ -73,7 +73,7 @@ export const DonorSimulatorModal: React.FC<DonorSimulatorModalProps> = ({
                   Incoming WhatsApp Notification
                 </span>
                 <p className="text-xs text-slate-400 mt-1">
-                  Sent via RakhtKhoj Emergency Webhook to verified donors within 15 km.
+                  Sent via Rakshya Emergency Webhook to verified donors within 15 km.
                 </p>
               </div>
 
@@ -81,7 +81,7 @@ export const DonorSimulatorModal: React.FC<DonorSimulatorModalProps> = ({
               <div className="bg-[#0b141a] p-4 rounded-2xl border border-emerald-500/30 text-slate-100 shadow-inner">
                 <div className="flex items-center gap-2 text-xs font-bold text-emerald-400 pb-2 border-b border-slate-800">
                   <Heart className="w-4 h-4 fill-emerald-400" />
-                  RakhtKhoj Emergency Alert System
+                  Rakshya Emergency Alert System
                 </div>
 
                 <div className="mt-3 text-xs space-y-1.5 font-mono">

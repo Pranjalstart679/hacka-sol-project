@@ -14,7 +14,7 @@ export const HackathonPitchContext: React.FC<HackathonPitchContextProps> = ({ on
           <Trophy className="w-4 h-4 text-amber-300" /> Hack-A-Sol 2026 • Open Track
         </div>
         <h1 className="text-2xl sm:text-4xl font-black tracking-tight leading-tight">
-          RakhtKhoj: The Lifesaving Bridge for e-RaktKosh
+          Rakshya: The Lifesaving Bridge for e-RaktKosh
         </h1>
         <p className="text-sm sm:text-base text-red-100 max-w-2xl mt-2 leading-relaxed">
           Inspired by the 1st place winner of "Build What Moves India", solving India's annual 5-million unit blood deficit through radical UX decluttering and zero-install WhatsApp matching.
@@ -41,7 +41,7 @@ export const HackathonPitchContext: React.FC<HackathonPitchContextProps> = ({ on
             The 100 km Distance Problem
           </h3>
           <p className="text-xs text-slate-600 leading-relaxed">
-            12% of Indian districts are over 100 km away from any functional blood bank. When accidents or emergency surgeries occur, traveling to a distant facility takes hours. RakhtKhoj immediately activates verified local donors nearby.
+            12% of Indian districts are over 100 km away from any functional blood bank. When accidents or emergency surgeries occur, traveling to a distant facility takes hours. Rakshya immediately activates verified local donors nearby.
           </p>
         </div>
 
@@ -53,7 +53,7 @@ export const HackathonPitchContext: React.FC<HackathonPitchContextProps> = ({ on
             28 Lakh Registered Donors, Zero Access
           </h3>
           <p className="text-xs text-slate-600 leading-relaxed">
-            The official e-RaktKosh portal holds 28 lakh donor records, but ordinary citizens in distress cannot access them during emergencies. RakhtKhoj provides direct, consent-driven broadcast matching in minutes.
+            The official e-RaktKosh portal holds 28 lakh donor records, but ordinary citizens in distress cannot access them during emergencies. Rakshya provides direct, consent-driven broadcast matching in minutes.
           </p>
         </div>
 
@@ -77,7 +77,7 @@ export const HackathonPitchContext: React.FC<HackathonPitchContextProps> = ({ on
             Ethical Growth via Referral Incentives
           </h3>
           <p className="text-xs text-slate-600 leading-relaxed">
-            Under Indian law, blood cannot be bought or sold for cash. RakhtKhoj drives viral supply growth by incentivizing citizens to invite and onboard new verified donors with health checkups and community rewards.
+            Under Indian law, blood cannot be bought or sold for cash. Rakshya drives viral supply growth by incentivizing citizens to invite and onboard new verified donors with health checkups and community rewards.
           </p>
         </div>
       </div>

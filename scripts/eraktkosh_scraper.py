@@ -2,7 +2,7 @@
 e-RaktKosh & Public Blood Registry Scraper Pipeline
 Hack-A-Sol 2026 - IIIT Naya Raipur (Open Track)
 
-This script demonstrates how RakhtKhoj extracts and indexes:
+This script demonstrates how Rakshya extracts and indexes:
 1. Public Blood Bank Directory & Stock Availability from e-RaktKosh (MoHFW)
 2. Blood Donation Camp Schedules & Verified Nodal Camp Records
 3. Public Volunteer Donor Registries (e.g. Friends2Support / Red Cross)
@@ -75,7 +75,7 @@ if __name__ == "__main__":
     state = sys.argv[2] if len(sys.argv) > 2 else "CHHATTISGARH"
     
     print("=" * 60)
-    print("RAKHTKHOJ DATA INGESTION ENGINE")
+    print("RAKSHYA DATA INGESTION ENGINE")
     print("Bridge for e-RaktKosh (MoHFW) & Public Volunteer Registries")
     print("=" * 60)
     

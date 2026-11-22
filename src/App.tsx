@@ -189,7 +189,7 @@ export function App() {
       <footer className="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span className="font-extrabold text-slate-900">RakhtKhoj</span>
+            <span className="font-extrabold text-slate-900">Rakshya</span>
             <span>• Hack-A-Sol 2026 (IIIT Naya Raipur) • Open Track</span>
           </div>
           <div className="text-slate-400 text-[11px]">

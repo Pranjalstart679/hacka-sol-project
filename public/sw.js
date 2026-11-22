@@ -1,5 +1,5 @@
-// RakhtKhoj Service Worker for PWA Offline Caching
-const CACHE_NAME = 'rakhtkhoj-cache-v1';
+// Rakshya Service Worker for PWA Offline Caching
+const CACHE_NAME = 'rakshya-cache-v1';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',

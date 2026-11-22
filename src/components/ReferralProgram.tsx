@@ -3,8 +3,8 @@ import { Gift, Share2, Award, ShieldAlert, CheckCircle2, Copy, Users, Sparkles }
 
 export const ReferralProgram: React.FC = () => {
   const [copied, setCopied] = useState(false);
-  const referralCode = 'RAKHT-HERO-2026';
-  const referralLink = `https://rakhtkhoj.org/join?ref=${referralCode}`;
+  const referralCode = 'RAKSHYA-HERO-2026';
+  const referralLink = `https://rakshya.org/join?ref=${referralCode}`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(referralLink);
@@ -62,7 +62,7 @@ export const ReferralProgram: React.FC = () => {
             <strong className="text-amber-400 font-bold block text-sm mb-1">
               Why We Reward Referrals (Not Blood Sales)
             </strong>
-            Under the National Blood Transfusion Council regulations and the Supreme Court of India ruling (1996), paying cash directly for blood donation is strictly illegal. However, human systems need incentives to reach massive scale. RakhtKhoj rewards citizens for <strong>onboarding and verifying other eligible donors</strong>, expanding the supply pool legally and ethically.
+            Under the National Blood Transfusion Council regulations and the Supreme Court of India ruling (1996), paying cash directly for blood donation is strictly illegal. However, human systems need incentives to reach massive scale. Rakshya rewards citizens for <strong>onboarding and verifying other eligible donors</strong>, expanding the supply pool legally and ethically.
           </div>
         </div>
       </div>
@@ -88,7 +88,7 @@ export const ReferralProgram: React.FC = () => {
             {copied ? 'Link Copied!' : 'Copy Link'}
           </button>
           <a
-            href={`https://wa.me/?text=${encodeURIComponent(`Hey! I just registered as an emergency blood donor on RakhtKhoj. India faces a 5M unit blood deficit every year. Join using my link so you can be notified if someone nearby needs a compatible match: ${referralLink}`)}`}
+            href={`https://wa.me/?text=${encodeURIComponent(`Hey! I just registered as an emergency blood donor on Rakshya. India faces a 5M unit blood deficit every year. Join using my link so you can be notified if someone nearby needs a compatible match: ${referralLink}`)}`}
             target="_blank"
             rel="noreferrer"
             className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-colors flex-shrink-0"

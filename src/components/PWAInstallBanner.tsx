@@ -51,7 +51,7 @@ export const PWAInstallBanner: React.FC = () => {
       </div>
       <div className="flex-1 text-xs">
         <strong className="text-slate-900 font-extrabold block text-sm">
-          Install RakhtKhoj App
+          Install Rakshya App
         </strong>
         <p className="text-slate-500 mt-0.5">
           Install as a standalone mobile app for instant 1-tap emergency access with zero app-store download.

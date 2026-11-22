@@ -447,7 +447,7 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
                   </span>
                 </div>
                 <div className="bg-white p-3 rounded-lg border border-emerald-200 text-xs text-slate-800 font-mono whitespace-pre-line shadow-xs">
-                  {`🚨 URGENT BLOOD REQUEST (via RakhtKhoj) 🚨\n`}
+                  {`🚨 URGENT BLOOD REQUEST (via Rakshya) 🚨\n`}
                   {`Patient: ${patientName} (${patientAge}y, ${patientGender})\n`}
                   {`Blood Needed: ${selectedGroup} (${unitsNeeded} Unit${unitsNeeded > 1 ? 's' : ''})\n`}
                   {`Compatible Donor Types: ${compatibleGroups.join(', ')}\n`}
@@ -617,7 +617,7 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
                         Call Donor
                       </a>
                       <a
-                        href={`https://wa.me/${donor.phone.replace(/[^0-9]/g, '')}?text=Hello%20${donor.name},%20we%20received%20your%20acceptance%20on%20RakhtKhoj%20for%20${activeSOS.patientName}.%20Thank%20you%20so%20much.`}
+                        href={`https://wa.me/${donor.phone.replace(/[^0-9]/g, '')}?text=Hello%20${donor.name},%20we%20received%20your%20acceptance%20on%20Rakshya%20for%20${activeSOS.patientName}.%20Thank%20you%20so%20much.`}
                         target="_blank"
                         rel="noreferrer"
                         className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl flex items-center gap-1.5 transition-colors"

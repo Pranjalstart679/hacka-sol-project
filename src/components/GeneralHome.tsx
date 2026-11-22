@@ -358,7 +358,7 @@ export const GeneralHome: React.FC<GeneralHomeProps> = ({
         </div>
       </section>
 
-      {/* ================= E-RAKTKOSH VS RAKHTKHOJ COMPARISON ================= */}
+      {/* ================= E-RAKTKOSH VS RAKSHYA COMPARISON ================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 shadow-xs">
           <div className="text-center max-w-xl mx-auto mb-8">
@@ -366,7 +366,7 @@ export const GeneralHome: React.FC<GeneralHomeProps> = ({
               Why We Won "Build What Moves India"
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              Direct comparison between the legacy government portal experience and RakhtKhoj.
+              Direct comparison between the legacy government portal experience and Rakshya.
             </p>
           </div>
 
@@ -376,7 +376,7 @@ export const GeneralHome: React.FC<GeneralHomeProps> = ({
                 <tr className="border-b border-slate-200 bg-slate-50/70">
                   <th className="py-3 px-4 font-bold text-slate-700">Feature</th>
                   <th className="py-3 px-4 font-bold text-slate-400">Legacy e-RaktKosh Portal</th>
-                  <th className="py-3 px-4 font-bold text-red-600">RakhtKhoj Modernization</th>
+                  <th className="py-3 px-4 font-bold text-red-600">Rakshya Modernization</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
