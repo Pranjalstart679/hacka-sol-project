@@ -18,7 +18,7 @@ interface GeneralHomeProps {
   userLocation: { lat: number; lng: number; label: string };
   onUpdateLocation: (lat: number, lng: number, label: string) => void;
   onStartEmergency: (preselectedGroup?: BloodGroup) => void;
-  onNavigateTab: (tab: 'banks' | 'register' | 'rewards' | 'pitch') => void;
+  onNavigateTab: (tab: 'banks' | 'register' | 'rewards' | 'architecture') => void;
 }
 
 const BLOOD_GROUPS: BloodGroup[] = ['O-', 'O+', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+'];
@@ -124,9 +124,9 @@ export const GeneralHome: React.FC<GeneralHomeProps> = ({
             {/* Asymmetric Briefing Column (4 cols) */}
             <div className="lg:col-span-4 border-t lg:border-t-0 lg:border-l border-neutral-800 pt-6 lg:pt-0 lg:pl-8 space-y-6 font-mono text-xs text-neutral-400">
               <div className="border-b border-neutral-800 pb-4">
-                <span className="text-neutral-500 uppercase tracking-wider block text-[10px]">Context</span>
+                <span className="text-neutral-500 uppercase tracking-wider block text-[10px]">Mission</span>
                 <span className="text-neutral-200 font-semibold mt-1 block font-sans text-sm">
-                  1st Place Winner, "Build What Moves India"
+                  Decentralized Public Health Defense
                 </span>
                 <p className="text-neutral-400 mt-1 leading-relaxed font-sans">
                   Solving the critical golden-hour gap for accident victims and urgent surgical procedures.
@@ -428,7 +428,7 @@ export const GeneralHome: React.FC<GeneralHomeProps> = ({
           <div className="max-w-2xl mb-8">
             <span className="font-mono text-xs uppercase tracking-wider text-neutral-400">Architectural Comparison</span>
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-neutral-900 tracking-tightest mt-1">
-              Why We Won "Build What Moves India"
+              Decentralized Dispatch vs Legacy Portal
             </h2>
             <p className="text-xs sm:text-sm text-neutral-600 mt-1 leading-generous">
               Direct comparison between the legacy government portal design and Rakshya's decentralized approach.

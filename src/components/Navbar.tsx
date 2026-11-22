@@ -1,9 +1,9 @@
 import React from 'react';
-import { Droplet, PhoneCall, Building2, Gift, PlayCircle, Home, Database, UserPlus } from 'lucide-react';
+import { Droplet, PhoneCall, Building2, Gift, Layers, Home, Database, UserPlus } from 'lucide-react';
 
 interface NavbarProps {
-  activeTab: 'home' | 'emergency' | 'banks' | 'register' | 'rewards' | 'pitch' | 'sync';
-  setActiveTab: (tab: 'home' | 'emergency' | 'banks' | 'register' | 'rewards' | 'pitch' | 'sync') => void;
+  activeTab: 'home' | 'emergency' | 'banks' | 'register' | 'rewards' | 'architecture' | 'sync';
+  setActiveTab: (tab: 'home' | 'emergency' | 'banks' | 'register' | 'rewards' | 'architecture' | 'sync') => void;
   onResetEmergency?: () => void;
 }
 
@@ -130,14 +130,14 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onReset
             </button>
 
             <button
-              onClick={() => setActiveTab('pitch')}
+              onClick={() => setActiveTab('architecture')}
               className={`px-3 py-2 rounded font-medium transition-colors ${
-                activeTab === 'pitch'
+                activeTab === 'architecture'
                   ? 'bg-neutral-900 text-white'
                   : 'text-neutral-700 hover:bg-neutral-100'
               }`}
             >
-              Pitch Story
+              Architecture
             </button>
           </nav>
         </div>

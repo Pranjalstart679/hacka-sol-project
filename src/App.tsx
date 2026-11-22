@@ -14,7 +14,7 @@ import { BloodBank, Donor, BloodGroup, SOSRequest } from './types';
 import { Droplet, Home, Database } from 'lucide-react';
 
 export function App() {
-  const [activeTab, setActiveTab] = useState<'home' | 'emergency' | 'banks' | 'register' | 'rewards' | 'pitch' | 'sync'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'emergency' | 'banks' | 'register' | 'rewards' | 'architecture' | 'sync'>('home');
   
   // Real coordinates state (defaults to Nava Raipur, CG - site of Hack-A-Sol IIIT-NR)
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number; label: string }>({
@@ -135,7 +135,7 @@ export function App() {
           <ReferralProgram />
         )}
 
-        {activeTab === 'pitch' && (
+        {activeTab === 'architecture' && (
           <HackathonPitchContext
             onStartDemo={() => handleStartEmergency()}
           />
