@@ -2,7 +2,7 @@
 
 Transforming e-RaktKosh into an immediate, zero-friction emergency network for patients and local donors.
 
-**Live Production App:** [https://rakhtkhoj.vercel.app](https://rakhtkhoj.vercel.app)
+**Live Production App:** [https://rakshya-app.vercel.app](https://rakshya-app.vercel.app)
 
 Project developed for Hack-A-Sol 2026 at IIIT Naya Raipur (Open Track).
 Inspired by the 1st place winner ("RakhtKhoj" by Team Raktosh) at the "Build What Moves India" public services hackathon.
