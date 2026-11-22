@@ -47,15 +47,3 @@ export interface SOSRequest {
   status: 'BROADCASTED' | 'MATCHED' | 'FULFILLED';
   acceptedDonors: string[]; // donor IDs
 }
-
-export interface DonorNotification {
-  requestId: string;
-  donorId: string;
-  patientName: string;
-  bloodGroup: BloodGroup;
-  hospital: string;
-  distanceKm: number;
-  units: number;
-  status: 'PENDING' | 'ACCEPTED' | 'DECLINED';
-  timestamp: string;
-}
