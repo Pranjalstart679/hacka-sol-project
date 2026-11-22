@@ -37,7 +37,7 @@ export function getWhoCanReceiveFrom(donor: BloodGroup): BloodGroup[] {
 }
 
 /**
- * 90-day cooldown calculation for male/female blood donation rules.
+ * 90-day cooldown calculation for blood donation rules (ICMR / NBTC standard).
  */
 export function calculateDonorEligibility(lastDonationDateStr: string): {
   isEligible: boolean;
@@ -51,11 +51,33 @@ export function calculateDonorEligibility(lastDonationDateStr: string): {
   const today = new Date();
   const diffTime = Math.abs(today.getTime() - lastDate.getTime());
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  const MIN_COOLDOWN_DAYS = 90; // Standard ICMR / Red Cross 3-month gap
+  const MIN_COOLDOWN_DAYS = 90;
 
   if (diffDays >= MIN_COOLDOWN_DAYS) {
     return { isEligible: true, cooldownDaysRemaining: 0 };
   } else {
     return { isEligible: false, cooldownDaysRemaining: MIN_COOLDOWN_DAYS - diffDays };
   }
+}
+
+/**
+ * Real Haversine Great-Circle Distance Calculation between two GPS coordinates (in km).
+ */
+export function calculateHaversineDistance(
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number
+): number {
+  const R = 6371; // Earth radius in kilometers
+  const dLat = (lat2 - lat1) * (Math.PI / 180);
+  const dLon = (lon2 - lon1) * (Math.PI / 180);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * (Math.PI / 180)) *
+      Math.cos(lat2 * (Math.PI / 180)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return Math.round(R * c * 10) / 10;
 }
