@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BloodGroup, BloodBank, Donor, SOSRequest } from '../types';
-import { COMPATIBILITY_RULES, getCompatibleDonorGroups } from '../lib/compatibility';
+import { getCompatibleDonorGroups } from '../lib/compatibility';
 import { generateWhatsAppMessage } from '../lib/mockData';
 import { 
   AlertTriangle, 
@@ -8,20 +8,22 @@ import {
   Phone, 
   Send, 
   CheckCircle2, 
-  Clock, 
   ShieldAlert, 
-  UserCheck, 
   Share2, 
   ExternalLink,
   ChevronRight,
   ArrowLeft,
-  Hospital
+  Hospital,
+  Navigation
 } from 'lucide-react';
 
 interface EmergencyWizardProps {
   bloodBanks: BloodBank[];
   donors: Donor[];
+  userLocation: { lat: number; lng: number; label: string };
+  initialGroup?: BloodGroup | null;
   onOpenDonorSimulator: (request: SOSRequest, donor: Donor) => void;
+  onBackToHome?: () => void;
 }
 
 const BLOOD_GROUPS: BloodGroup[] = ['O-', 'O+', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+'];
@@ -29,49 +31,35 @@ const BLOOD_GROUPS: BloodGroup[] = ['O-', 'O+', 'A-', 'A+', 'B-', 'B+', 'AB-', '
 export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
   bloodBanks,
   donors,
+  userLocation,
+  initialGroup,
   onOpenDonorSimulator,
+  onBackToHome,
 }) => {
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
-  const [selectedGroup, setSelectedGroup] = useState<BloodGroup | null>('O+');
-  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number; city: string }>({
-    lat: 21.1610,
-    lng: 81.7820,
-    city: 'Nava Raipur, CG'
-  });
-  const [locationDetected, setLocationDetected] = useState(false);
+  const [selectedGroup, setSelectedGroup] = useState<BloodGroup | null>(initialGroup || 'O+');
+
+  useEffect(() => {
+    if (initialGroup) {
+      setSelectedGroup(initialGroup);
+    }
+  }, [initialGroup]);
 
   // SOS Form State
   const [patientName, setPatientName] = useState('Rohan Deshmukh');
   const [patientAge, setPatientAge] = useState(28);
   const [patientGender, setPatientGender] = useState<'Male' | 'Female' | 'Other'>('Male');
   const [unitsNeeded, setUnitsNeeded] = useState(2);
-  const [hospitalName, setHospitalName] = useState('AIIMS Trauma Center, Raipur');
+  const [hospitalName, setHospitalName] = useState('AIIMS Raipur Trauma Center');
   const [contactPhone, setContactPhone] = useState('+91 98765 01234');
   
   // Active broadcast state
   const [activeSOS, setActiveSOS] = useState<SOSRequest | null>(null);
-  const [acceptedDonorIds, setAcceptedDonorIds] = useState<string[]>(['dn-1']);
-
-  // Handle GPS detection
-  const handleDetectLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        () => {
-          setLocationDetected(true);
-        },
-        () => {
-          // Fallback
-          setLocationDetected(true);
-        }
-      );
-    } else {
-      setLocationDetected(true);
-    }
-  };
+  const [acceptedDonorIds] = useState<string[]>(['dn-1']);
 
   const compatibleGroups = selectedGroup ? getCompatibleDonorGroups(selectedGroup) : [];
 
-  // Filter blood banks
+  // Sort blood banks by real distance
   const sortedBanks = [...bloodBanks].sort((a, b) => a.distanceKm - b.distanceKm);
 
   // Eligible donors compatible with selected blood group
@@ -89,7 +77,7 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
       bloodGroup: selectedGroup,
       unitsNeeded,
       hospitalName,
-      city: userLocation.city,
+      city: userLocation.label,
       contactPerson: 'Attendant / Family Member',
       contactPhone,
       urgency: 'CRITICAL',
@@ -123,6 +111,15 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
       {/* ================= STEP 1: BLOOD GROUP SELECTION ================= */}
       {step === 1 && (
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-10">
+          {onBackToHome && (
+            <button
+              onClick={onBackToHome}
+              className="text-xs font-semibold text-slate-500 hover:text-slate-800 flex items-center gap-1 mb-4"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" /> Back to Home
+            </button>
+          )}
+
           <div className="text-center max-w-xl mx-auto mb-8">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-red-100 text-red-700 mb-3">
               <ShieldAlert className="w-3.5 h-3.5" /> Emergency Protocol
@@ -131,7 +128,7 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
               What is the blood group of the patient?
             </h1>
             <p className="text-sm text-slate-500 mt-2">
-              No forms or delays. Tap the patient's blood type to instantly calculate safe compatible donors and check live blood bank inventory.
+              No long forms or delays. Tap the patient's blood type to instantly calculate safe compatible donors and check live blood bank inventory.
             </p>
           </div>
 
@@ -213,19 +210,7 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
                 </h2>
                 <div className="flex items-center gap-1.5 text-xs text-slate-500 mt-1">
                   <MapPin className="w-3.5 h-3.5 text-red-600" />
-                  <span>Searching around: <strong>{userLocation.city}</strong></span>
-                  {!locationDetected ? (
-                    <button
-                      onClick={handleDetectLocation}
-                      className="text-blue-600 underline font-semibold ml-2 hover:text-blue-800"
-                    >
-                      Use Exact GPS
-                    </button>
-                  ) : (
-                    <span className="text-emerald-600 font-semibold ml-2 flex items-center gap-1">
-                      <CheckCircle2 className="w-3 h-3" /> GPS Locked
-                    </span>
-                  )}
+                  <span>Searching around: <strong>{userLocation.label}</strong> ({userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)})</span>
                 </div>
               </div>
 
@@ -301,11 +286,20 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
 
                     <div className="flex items-center gap-2">
                       <a
-                        href={`tel:${bank.phone}`}
-                        className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${bank.latitude},${bank.longitude}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-2.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg flex items-center gap-1 transition-colors"
                       >
-                        <Phone className="w-3.5 h-3.5 text-emerald-600" />
-                        Call Bank
+                        <Navigation className="w-3.5 h-3.5 text-blue-600" />
+                        Map
+                      </a>
+                      <a
+                        href={`tel:${bank.phone}`}
+                        className="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
+                      >
+                        <Phone className="w-3.5 h-3.5 text-emerald-400" />
+                        Call
                       </a>
                     </div>
                   </div>
@@ -478,7 +472,7 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
                     selectedGroup!,
                     unitsNeeded,
                     hospitalName,
-                    userLocation.city,
+                    userLocation.label,
                     compatibleGroups,
                     contactPhone
                   )}
