@@ -8,6 +8,7 @@ import { ReferralProgram } from './components/ReferralProgram';
 import { HackathonPitchContext } from './components/HackathonPitchContext';
 import { DonorSimulatorModal } from './components/DonorSimulatorModal';
 import { DataSyncEngine } from './components/DataSyncEngine';
+import { PWAInstallBanner } from './components/PWAInstallBanner';
 import { getBloodBanksWithDistance, INITIAL_DONORS } from './lib/mockData';
 import { BloodBank, Donor, BloodGroup, SOSRequest } from './types';
 import { Droplet, Home, Database } from 'lucide-react';
@@ -84,6 +85,9 @@ export function App() {
           setActiveTab('home');
         }}
       />
+
+      {/* PWA Mobile Install Prompt */}
+      <PWAInstallBanner />
 
       {/* Main Content Area */}
       <main className="flex-1 pb-16">
