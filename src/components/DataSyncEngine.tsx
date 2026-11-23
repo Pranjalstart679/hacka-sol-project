@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { BloodBank, Donor, BloodGroup } from '../types';
+import { calculateDonorEligibility } from '../lib/compatibility';
+import React, { useEffect, useRef, useState } from 'react';
+import { Donor, BloodGroup } from '../types';
 import { 
   Database, 
   Terminal, 
@@ -9,7 +10,7 @@ import {
 } from 'lucide-react';
 
 interface DataSyncEngineProps {
-  onSyncComplete: (newBanks: BloodBank[], newDonors: Donor[], districtName: string) => void;
+  onSyncComplete: (newDonors: Donor[]) => void;
 }
 
 export const DataSyncEngine: React.FC<DataSyncEngineProps> = ({ onSyncComplete }) => {
@@ -28,31 +29,27 @@ export const DataSyncEngine: React.FC<DataSyncEngineProps> = ({ onSyncComplete }
     'Maharashtra': ['Mumbai Suburban', 'Pune', 'Nagpur', 'Nashik']
   };
 
+  const timer = useRef<number>();
+  useEffect(() => () => window.clearInterval(timer.current), []);
+
   const handleRunScraper = () => {
     setIsSyncing(true);
     setSyncDone(false);
     setTerminalLogs([]);
 
     const steps = [
-      `[*] Connecting to e-RaktKosh gateway: https://eraktkosh.mohfw.gov.in/BLDAHIMS/bloodbank/stockAvailability.cnt`,
-      `[+] Target Query: State = ${selectedState.toUpperCase()}, District = ${selectedDistrict.toUpperCase()}`,
-      `[*] Executing HTTP GET to MoHFW session endpoint... [200 OK]`,
-      `[+] Extracted 8 licensed Blood Centers & component storage facilities for ${selectedDistrict}.`,
-      `[*] Querying e-RaktKosh National Camp Registry (campSchedule.cnt)... [Found 14 voluntary drives]`,
-      `[*] Ingesting public emergency voluntary rosters (Friends2Support.org & Red Cross Chhattisgarh)...`,
-      `[+] Parsing 4,280 voluntary records in ${selectedDistrict} radius...`,
-      `[*] Applying NBTC 90-Day Safe Cooldown Algorithm... [Eliminated 1,420 recent donors]`,
-      `[*] Sanitizing contact hashes & establishing WhatsApp Bot dispatch triggers...`,
-      `[✓] Ingestion Complete: 14 Blood Banks and 12 Available, Eligible & Compatible Donors indexed for ${selectedDistrict}!`
+      `Loading sample data for ${selectedDistrict}, ${selectedState}…`,
+      'Checking donation dates against the demo cooldown.',
+      'Prepared four sample donor profiles.'
     ];
 
     let currentStep = 0;
-    const interval = setInterval(() => {
+    timer.current = window.setInterval(() => {
       if (currentStep < steps.length) {
-        setTerminalLogs(prev => [...prev, steps[currentStep]]);
-        currentStep++;
+        const log = steps[currentStep++];
+        setTerminalLogs(prev => [...prev, log]);
       } else {
-        clearInterval(interval);
+        window.clearInterval(timer.current);
         setIsSyncing(false);
         setSyncDone(true);
 
@@ -111,7 +108,7 @@ export const DataSyncEngine: React.FC<DataSyncEngineProps> = ({ onSyncComplete }
           }
         ];
 
-        onSyncComplete([], newScrapedDonors, selectedDistrict);
+        onSyncComplete(newScrapedDonors.map(d => ({ ...d, ...calculateDonorEligibility(d.lastDonationDate) })));
       }
     }, 400);
   };
@@ -124,10 +121,10 @@ export const DataSyncEngine: React.FC<DataSyncEngineProps> = ({ onSyncComplete }
           Government Portal Data Bridge
         </span>
         <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-neutral-900 tracking-tightest leading-[1.1]">
-          e-RaktKosh Ingestion & Extraction Engine
+          District donor import simulator
         </h1>
         <p className="text-sm text-neutral-600 max-w-2xl leading-generous font-sans">
-          The national e-RaktKosh system holds 2.8 million donor records that remain inaccessible during sudden emergencies. Rakshya ingests public portal availability records, filters by safe cooldown windows, and exposes them to the local dispatch pipeline.
+          Choose a district to load four sample donor profiles into this session. Repeating an import refreshes the same profiles.
         </p>
       </div>
 
@@ -169,18 +166,21 @@ export const DataSyncEngine: React.FC<DataSyncEngineProps> = ({ onSyncComplete }
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-neutral-800">
           <div>
             <div className="flex items-center gap-2 font-mono text-xs text-emerald-400 mb-1">
-              <Terminal className="w-3.5 h-3.5" /> Live Data Ingestion Terminal
+              <Terminal className="w-3.5 h-3.5" /> Sample import log
             </div>
             <h3 className="font-display text-xl font-bold text-white tracking-tightest">
-              Execute District Scraper & Ingestion Pipeline
+              Import a district sample
             </h3>
           </div>
 
           {/* Selectors */}
           <div className="flex flex-wrap items-center gap-2 font-sans">
             <select
+              aria-label="State"
+              disabled={isSyncing}
               value={selectedState}
               onChange={(e) => {
+                setSyncDone(false);
                 setSelectedState(e.target.value);
                 setSelectedDistrict(DISTRICT_OPTIONS[e.target.value][0]);
               }}
@@ -192,8 +192,10 @@ export const DataSyncEngine: React.FC<DataSyncEngineProps> = ({ onSyncComplete }
             </select>
 
             <select
+              aria-label="District"
+              disabled={isSyncing}
               value={selectedDistrict}
-              onChange={(e) => setSelectedDistrict(e.target.value)}
+              onChange={(e) => { setSyncDone(false); setSelectedDistrict(e.target.value); }}
               className="bg-neutral-800 text-xs text-neutral-200 px-3 py-2 rounded border border-neutral-700 outline-none font-mono"
             >
               {DISTRICT_OPTIONS[selectedState]?.map(d => (
@@ -225,7 +227,7 @@ export const DataSyncEngine: React.FC<DataSyncEngineProps> = ({ onSyncComplete }
           ))}
           {isSyncing && (
             <div className="text-neutral-500 animate-pulse">
-              _ executing network handshake with state nodal server...
+              Loading sample records…
             </div>
           )}
         </div>

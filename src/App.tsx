@@ -6,11 +6,10 @@ import { BloodBankExplorer } from './components/BloodBankExplorer';
 import { DonorRegistration } from './components/DonorRegistration';
 import { ReferralProgram } from './components/ReferralProgram';
 import { HackathonPitchContext } from './components/HackathonPitchContext';
-import { DonorSimulatorModal } from './components/DonorSimulatorModal';
 import { DataSyncEngine } from './components/DataSyncEngine';
 import { PWAInstallBanner } from './components/PWAInstallBanner';
 import { getBloodBanksWithDistance, INITIAL_DONORS } from './lib/mockData';
-import { BloodBank, Donor, BloodGroup, SOSRequest } from './types';
+import { BloodBank, Donor, BloodGroup } from './types';
 import { Droplet, Home, Database } from 'lucide-react';
 
 export function App() {
@@ -28,12 +27,7 @@ export function App() {
   );
 
   const [donors, setDonors] = useState<Donor[]>(INITIAL_DONORS);
-  const [preselectedGroup, setPreselectedGroup] = useState<BloodGroup | null>('O+');
-
-  // Simulator Modal State
-  const [isSimulatorOpen, setIsSimulatorOpen] = useState(false);
-  const [simRequest, setSimRequest] = useState<SOSRequest | null>(null);
-  const [simDonor, setSimDonor] = useState<Donor | null>(null);
+  const [preselectedGroup, setPreselectedGroup] = useState<BloodGroup | null>(null);
 
   const handleUpdateLocation = (lat: number, lng: number, label: string) => {
     setUserLocation({ lat, lng, label });
@@ -42,37 +36,17 @@ export function App() {
   };
 
   const handleStartEmergency = (group?: BloodGroup) => {
-    if (group) {
-      setPreselectedGroup(group);
-    }
+    setPreselectedGroup(group ?? null);
     setActiveTab('emergency');
-  };
-
-  const handleOpenSimulator = (request: SOSRequest, donor: Donor) => {
-    setSimRequest(request);
-    setSimDonor(donor);
-    setIsSimulatorOpen(true);
-  };
-
-  const handleDonorAccept = (donorId: string) => {
-    setDonors(prev => prev.map(d => {
-      if (d.id === donorId) {
-        return { ...d, donationsCount: d.donationsCount + 1 };
-      }
-      return d;
-    }));
   };
 
   const handleDonorRegistered = (newDonor: Donor) => {
     setDonors(prev => [newDonor, ...prev]);
   };
 
-  const handleSyncComplete = (_newBanks: BloodBank[], newDonors: Donor[], districtName: string) => {
-    setDonors(prev => [...newDonors, ...prev]);
-    setUserLocation(prev => ({
-      ...prev,
-      label: `${districtName} (Live Synced via e-RaktKosh Scraper)`
-    }));
+  const handleSyncComplete = (newDonors: Donor[]) => {
+    const importedIds = new Set(newDonors.map(donor => donor.id));
+    setDonors(previous => [...newDonors, ...previous.filter(donor => !importedIds.has(donor.id))]);
   };
 
   return (
@@ -80,7 +54,7 @@ export function App() {
       {/* Navigation */}
       <Navbar
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={tab => tab === 'emergency' ? handleStartEmergency() : setActiveTab(tab)}
         onResetEmergency={() => {
           setActiveTab('home');
         }}
@@ -113,7 +87,6 @@ export function App() {
             donors={donors}
             userLocation={userLocation}
             initialGroup={preselectedGroup}
-            onOpenDonorSimulator={handleOpenSimulator}
             onBackToHome={() => setActiveTab('home')}
           />
         )}
@@ -126,6 +99,7 @@ export function App() {
 
         {activeTab === 'register' && (
           <DonorRegistration
+            donors={donors}
             onDonorRegistered={handleDonorRegistered}
             onGoToRewards={() => setActiveTab('rewards')}
           />
@@ -143,13 +117,13 @@ export function App() {
       </main>
 
       {/* Quick Navigation Dock */}
-      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 bg-neutral-900 text-neutral-100 px-5 py-2.5 rounded-full border border-neutral-700 flex items-center gap-3 text-xs font-mono">
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 whitespace-nowrap bg-neutral-900 text-neutral-100 px-5 py-2.5 rounded-full border border-neutral-700 flex items-center gap-3 text-xs font-mono">
         <button
           onClick={() => setActiveTab('home')}
           className={`flex items-center gap-1.5 ${activeTab === 'home' ? 'text-white font-bold underline' : 'text-neutral-400 hover:text-white'}`}
         >
           <Home className="w-3.5 h-3.5" />
-          Masthead
+          Home
         </button>
         <span className="text-neutral-700">|</span>
         <button
@@ -165,25 +139,16 @@ export function App() {
           className={`flex items-center gap-1.5 ${activeTab === 'sync' ? 'text-white font-bold underline' : 'text-neutral-400 hover:text-white'}`}
         >
           <Database className="w-3.5 h-3.5 text-neutral-400" />
-          Data Bridge
+          Import
         </button>
         <span className="text-neutral-700">|</span>
         <button
           onClick={() => setActiveTab('banks')}
           className={`${activeTab === 'banks' ? 'text-white font-bold underline' : 'text-neutral-400 hover:text-white'}`}
         >
-          Storage Map
+          Banks
         </button>
       </div>
-
-      {/* Simulator Modal */}
-      <DonorSimulatorModal
-        isOpen={isSimulatorOpen}
-        onClose={() => setIsSimulatorOpen(false)}
-        request={simRequest}
-        donor={simDonor}
-        onDonorAccept={handleDonorAccept}
-      />
 
       {/* Editorial Colophon / Footer */}
       <footer className="bg-white border-t border-neutral-200 py-8 text-neutral-600 font-sans text-xs">

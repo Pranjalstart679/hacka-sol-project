@@ -1,7 +1,7 @@
 {
   "short_name": "Rakshya",
   "name": "Rakshya - Emergency Blood Discovery & Donor Network",
-  "description": "Emergency blood discovery network connecting patients in distress with live blood banks and verified nearby donors.",
+  "description": "Explore sample blood bank inventories and simulate a donor request.",
   "icons": [
     {
       "src": "/icon-192.png",

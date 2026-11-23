@@ -335,14 +335,14 @@ export function generateWhatsAppMessage(
   contactPhone: string
 ): string {
   const compatibleStr = compatibleGroups.join(', ');
-  const message = `🚨 *URGENT BLOOD REQUEST (via Rakshya)* 🚨\n\n` +
+  const message = `🚨 *DEMO BLOOD REQUEST (Rakshya simulation)* 🚨\n\n` +
     `*Patient Name:* ${patientName}\n` +
     `*Required Blood Group:* ${bloodGroup} (${units} Unit${units > 1 ? 's' : ''})\n` +
     `*Acceptable Compatible Types:* ${compatibleStr}\n` +
     `*Hospital:* ${hospital}, ${city}\n` +
     `*Emergency Contact:* ${contactPhone}\n\n` +
-    `If you or anyone you know is in ${city} and eligible to donate, please respond immediately or contact ${contactPhone}.\n\n` +
-    `Verified via Rakshya Emergency Network.`;
+    `This is a sample request from the Rakshya hackathon demo.\n\n` +
+    `No response is needed.`;
 
   return `https://wa.me/?text=${encodeURIComponent(message)}`;
 }

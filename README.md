@@ -1,79 +1,34 @@
-# Rakshya - Emergency Blood Discovery & Live Donor Network
+# Rakshya
 
-An emergency blood discovery and donor network connecting critical patients with verified hospital inventories and nearby donors across India.
+Rakshya is a mobile web prototype for finding blood banks and exploring how nearby donors might respond to a blood request. It was developed for Hack-A-Sol 2026 at IIIT Naya Raipur, Open Track.
 
-**Live Production App:** [https://rakshya-app.vercel.app](https://rakshya-app.vercel.app)
+[Hosted demo](https://rakshya-app.vercel.app)
 
-Project developed for Hack-A-Sol 2026 at IIIT Naya Raipur (Open Track).
+## Try the patient and donor workflow
 
-## Core Problem Statement
+1. Choose a patient blood group on the home page. Inspect matching red cell groups and sample facility stock.
+2. Select a city or allow browser location access to recalculate straight-line distances to facilities.
+3. Open **Broadcast SOS**, enter fictional patient details, and start a simulated alert.
+4. Select **Simulate donor response** to view the request as a donor. Accept or decline and return to the patient dashboard to see the result.
 
-- **UX Paralysis on e-RaktKosh:** The national portal contains records of over 2.8 million registered donors, but citizens cannot access them directly in life-or-death emergencies.
-- **The Distance Dilemma:** 12% of Indian districts are over 100 km away from any functional blood bank. Traveling to distant centers takes hours during the critical golden hour.
-- **Annual Deficit:** India collects ~11 million units of blood annually against a demand of ~16 million units (a 5 million unit annual deficit).
-- **Mobile App Fatigue:** Requiring donors to install a standalone application fails because donors can only donate once every 90 days. Standalone apps suffer massive churn and muted notifications.
+The directory, stock levels, donor distances, and referral milestones use example data. The browser does not query e-RaktKosh or send automatic WhatsApp notifications. The share button opens a WhatsApp draft that identifies the request as a demonstration. Clinical screening and actual stock confirmation belong with the receiving blood center.
 
-## The Solution: Rakshya
+Donor registration and district imports update the roster for the current browser session. Refreshing the page resets it. The prototype applies a 90-day interval to illustrate donor filtering.
 
-Rakshya operates as a lightweight, mobile-first progressive web platform coupled with instant WhatsApp dispatch.
+## Local development
 
-1. **Zero-Cognitive-Load Patient Flow:**
-   - Single immediate question: "What is the blood group of the patient?"
-   - Instant calculation of all compatible donor blood types.
-   - Proximity search of nearest blood banks with live inventory counts.
-   - Immediate SOS broadcast to nearby verified donors when banks are out of stock or too far (>100 km).
-2. **Mobile Web + WhatsApp Bridge:**
-   - Donors receive emergency alerts directly on WhatsApp with distance, patient details, and hospital name.
-   - 10-second rapid disqualification questionnaire (weight >45 kg, no recent tattoo/surgery in 6 months, healthy today).
-   - Once confirmed, direct one-tap calling and messaging between patient family and donor.
-3. **90-Day Cooldown Protection:**
-   - Automatic suppression of donors who have donated within the last 90 days.
-4. **Referral-Driven Growth (Legal Incentive Mechanism):**
-   - Direct payment for blood is prohibited under Indian law (National Blood Transfusion Council regulations).
-   - Rakshya provides referral incentives (health checkups, certified badges) for onboarding verified donors, expanding the national supply pool ethically.
+The frontend uses React, TypeScript, Vite, Tailwind CSS, and Leaflet. Install Node.js 22 and npm, then run:
 
-## Technical Architecture
-
-- **Frontend:** React 18, TypeScript, Tailwind CSS, Lucide Icons, Vite
-- **Logic Engines:**
-  - Antigen Compatibility Engine (RBC matching rules)
-  - Geolocation & Haversine Distance Calculator
-  - 90-Day ICMR Donor Cooldown Filter
-- **Simulators:**
-  - Emergency Broadcast Dispatcher
-  - Donor WhatsApp Perspective Modal (dual-device testing)
-  - Referral Code Generator and Milestone Tracker
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js (v18 or higher)
-- npm
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/Pranjalstart679/hacka-sol-project.git
-cd hacka-sol-project
-
-# Install dependencies
-npm install
-
-# Run the local development server
+```sh
+npm ci
 npm run dev
 ```
 
-### Production Build
+## Production preview
 
-```bash
+```sh
 npm run build
 npm run preview
 ```
 
-## Team & Track Information
-
-- **Event:** Hack-A-Sol 2026
-- **Institution:** IIIT Naya Raipur
-- **Track:** Open Track
+The build type-checks the application and generates a service worker for the bundled assets. After the worker finishes installing on localhost or HTTPS, the app and its sample directory can reopen offline. Map tiles, external directions, and WhatsApp sharing require a connection.

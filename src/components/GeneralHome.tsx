@@ -30,10 +30,11 @@ export const GeneralHome: React.FC<GeneralHomeProps> = ({
   onStartEmergency,
   onNavigateTab,
 }) => {
-  const [selectedCity, setSelectedCity] = useState<'raipur' | 'delhi' | 'bangalore'>('raipur');
+  const [locationError, setLocationError] = useState('');
+  const selectedCity = userLocation.label;
 
   const handleCityChange = (city: 'raipur' | 'delhi' | 'bangalore') => {
-    setSelectedCity(city);
+    setLocationError('');
     if (city === 'raipur') {
       onUpdateLocation(21.1610, 81.7820, 'Nava Raipur, Chhattisgarh');
     } else if (city === 'delhi') {
@@ -44,8 +45,12 @@ export const GeneralHome: React.FC<GeneralHomeProps> = ({
   };
 
   const handleUseRealGPS = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
+    setLocationError('');
+    if (!navigator.geolocation) {
+      setLocationError('Location is unavailable in this browser. Select a city.');
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
         (pos) => {
           onUpdateLocation(
             pos.coords.latitude,
@@ -54,10 +59,9 @@ export const GeneralHome: React.FC<GeneralHomeProps> = ({
           );
         },
         () => {
-          alert('GPS access denied or unavailable. Using default regional center.');
+          setLocationError('Could not get your location. Select a city or enable location access.');
         }
       );
-    }
   };
 
   return (
@@ -71,16 +75,16 @@ export const GeneralHome: React.FC<GeneralHomeProps> = ({
               <div className="flex items-center gap-3">
                 <span className="w-2 h-2 rounded-full bg-red-500" />
                 <span className="font-mono text-xs uppercase tracking-wider text-neutral-400">
-                  National Blood Transfusion Modernization Protocol
+                  Rakshya blood discovery demo
                 </span>
               </div>
 
               <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-semibold tracking-tightest leading-[1.08] text-white">
-                Emergency Blood Discovery in Minutes, Not Days.
+                Find blood banks and matching donors
               </h1>
 
               <p className="text-base sm:text-lg text-neutral-300 leading-generous max-w-2xl font-normal">
-                Connecting critical patients directly with live hospital inventories and verified nearby donors across India. Zero app downloads, zero administrative friction.
+                Explore sample blood bank stock, compare facility distances, and try a donor request with a simulated response.
               </p>
 
               {/* Action Rows */}
@@ -214,7 +218,7 @@ export const GeneralHome: React.FC<GeneralHomeProps> = ({
                 Blood Storage & Hospital Network
               </h2>
               <p className="text-xs sm:text-sm text-neutral-600 mt-1 leading-generous">
-                Verified inventory counts and direct route calculations from your active reference point.
+                Compare sample stock and straight-line distances from your selected location.
               </p>
             </div>
 
@@ -231,19 +235,19 @@ export const GeneralHome: React.FC<GeneralHomeProps> = ({
               <div className="flex border border-neutral-300 rounded p-0.5 text-xs font-medium bg-neutral-50">
                 <button
                   onClick={() => handleCityChange('raipur')}
-                  className={`px-3 py-1.5 rounded transition-colors ${selectedCity === 'raipur' ? 'bg-white text-red-700 font-semibold shadow-xs border border-neutral-200' : 'text-neutral-600 hover:text-neutral-900'}`}
+                  className={`px-3 py-1.5 rounded transition-colors ${selectedCity === 'Nava Raipur, Chhattisgarh' ? 'bg-white text-red-700 font-semibold shadow-xs border border-neutral-200' : 'text-neutral-600 hover:text-neutral-900'}`}
                 >
                   Raipur
                 </button>
                 <button
                   onClick={() => handleCityChange('delhi')}
-                  className={`px-3 py-1.5 rounded transition-colors ${selectedCity === 'delhi' ? 'bg-white text-red-700 font-semibold shadow-xs border border-neutral-200' : 'text-neutral-600 hover:text-neutral-900'}`}
+                  className={`px-3 py-1.5 rounded transition-colors ${selectedCity === 'Ansari Nagar, New Delhi' ? 'bg-white text-red-700 font-semibold shadow-xs border border-neutral-200' : 'text-neutral-600 hover:text-neutral-900'}`}
                 >
                   Delhi NCR
                 </button>
                 <button
                   onClick={() => handleCityChange('bangalore')}
-                  className={`px-3 py-1.5 rounded transition-colors ${selectedCity === 'bangalore' ? 'bg-white text-red-700 font-semibold shadow-xs border border-neutral-200' : 'text-neutral-600 hover:text-neutral-900'}`}
+                  className={`px-3 py-1.5 rounded transition-colors ${selectedCity === 'City Market, Bengaluru' ? 'bg-white text-red-700 font-semibold shadow-xs border border-neutral-200' : 'text-neutral-600 hover:text-neutral-900'}`}
                 >
                   Bengaluru
                 </button>
@@ -251,6 +255,7 @@ export const GeneralHome: React.FC<GeneralHomeProps> = ({
             </div>
           </div>
 
+          {locationError && <p role="status" className="text-sm text-red-700">{locationError}</p>}
           {/* Map Viewer */}
           <InteractiveMap
             userLocation={userLocation}
@@ -295,7 +300,7 @@ export const GeneralHome: React.FC<GeneralHomeProps> = ({
               </div>
               <div className="flex items-start gap-3">
                 <span className="w-5 h-5 rounded border border-neutral-300 bg-neutral-100 flex items-center justify-center font-mono text-[10px] text-neutral-800 font-bold flex-shrink-0 mt-0.5">2</span>
-                <span><strong>Live Blood Bank Inventory:</strong> Evaluates stock at nearby verified government and private storage centers.</span>
+                <span><strong>Blood bank inventory.</strong> Compare sample stock at nearby facilities.</span>
               </div>
               <div className="flex items-start gap-3">
                 <span className="w-5 h-5 rounded border border-neutral-300 bg-neutral-100 flex items-center justify-center font-mono text-[10px] text-neutral-800 font-bold flex-shrink-0 mt-0.5">3</span>
@@ -328,7 +333,7 @@ export const GeneralHome: React.FC<GeneralHomeProps> = ({
                 Blood Bank Directory & Stock
               </h4>
               <p className="text-xs text-neutral-600 mt-1 leading-generous">
-                Search verified hospital centers, direct 24x7 phone lines, and real-time component availability.
+                Search the facility directory and filter sample inventory by blood group.
               </p>
             </div>
 
@@ -345,7 +350,7 @@ export const GeneralHome: React.FC<GeneralHomeProps> = ({
                 Citizen Donor Registry
               </h4>
               <p className="text-xs text-neutral-600 mt-1 leading-generous">
-                Register without downloading an app. Receive alerts on WhatsApp only when someone nearby requires your exact type.
+                Add a sample donor and see how their blood group and last donation date affect matching.
               </p>
             </div>
 
@@ -376,10 +381,10 @@ export const GeneralHome: React.FC<GeneralHomeProps> = ({
             <div className="flex items-center gap-2 font-mono text-xs">
               <span className="w-2 h-2 rounded-full bg-red-500" />
               <h3 className="font-display text-lg font-bold text-white tracking-tightest">
-                Live Emergency Dispatch Log
+                Example dispatch log
               </h3>
             </div>
-            <span className="font-mono text-xs text-neutral-400">Verified transmissions across network nodes</span>
+            <span className="font-mono text-xs text-neutral-400">Illustrative requests and responses</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">

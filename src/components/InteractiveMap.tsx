@@ -112,10 +112,14 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
       markersRef.current.push(marker);
     });
 
-    return () => {
-      // Map stays managed by ref
-    };
-  }, [userLocation, bloodBanks, selectedBankId]);
+
+  }, [userLocation, bloodBanks, selectedBankId, onSelectBank]);
+
+  useEffect(() => () => {
+    mapInstanceRef.current?.remove();
+    mapInstanceRef.current = null;
+    markersRef.current = [];
+  }, []);
 
   return (
     <div className="relative w-full h-[400px] sm:h-[460px] rounded-lg overflow-hidden border border-neutral-300 z-0">

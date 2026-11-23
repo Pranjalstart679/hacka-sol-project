@@ -1,5 +1,5 @@
 import React from 'react';
-import { Droplet, PhoneCall, Building2, Gift, Layers, Home, Database, UserPlus } from 'lucide-react';
+import { Droplet, Building2, Gift, Layers, Home, Database, UserPlus } from 'lucide-react';
 
 interface NavbarProps {
   activeTab: 'home' | 'emergency' | 'banks' | 'register' | 'rewards' | 'architecture' | 'sync';
@@ -13,18 +13,8 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onReset
       {/* Emergency Helpline Banner */}
       <div className="bg-neutral-900 text-neutral-200 text-xs px-4 py-2 font-mono flex items-center justify-between border-b border-neutral-800">
         <div className="flex items-center gap-3 max-w-7xl mx-auto w-full">
-          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] tracking-wider uppercase font-bold bg-red-950 text-red-400 border border-red-800">
-            Emergency Helpline
-          </span>
-          <span className="hidden sm:inline text-neutral-400">National Blood Lines:</span>
-          <a href="tel:104" className="font-bold text-white hover:text-red-300 flex items-center gap-1">
-            <PhoneCall className="w-3 h-3 text-red-400" /> 104 / 1910
-          </a>
-          <span className="text-neutral-700">|</span>
-          <span className="text-neutral-400">National Emergency: 112</span>
-          <div className="ml-auto text-neutral-400 text-[11px] hidden md:block">
-            Decentralized e-RaktKosh Emergency Verification
-          </div>
+          <span className="font-semibold text-white">Hackathon demo</span>
+          <span className="text-neutral-300">Sample inventory and simulated donor alerts</span>
         </div>
       </div>
 

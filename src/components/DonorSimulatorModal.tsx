@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Donor, SOSRequest } from '../types';
 import { 
   X, 
@@ -12,21 +12,27 @@ import {
 } from 'lucide-react';
 
 interface DonorSimulatorModalProps {
-  isOpen: boolean;
+  onDecline: () => void;
   onClose: () => void;
-  request: SOSRequest | null;
-  donor: Donor | null;
+  request: SOSRequest;
+  donor: Donor;
   onDonorAccept: (donorId: string) => void;
 }
 
 export const DonorSimulatorModal: React.FC<DonorSimulatorModalProps> = ({
-  isOpen,
+  onDecline,
   onClose,
   request,
   donor,
   onDonorAccept
 }) => {
-  if (!isOpen || !request || !donor) return null;
+
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    dialog?.showModal();
+    return () => dialog?.close();
+  }, []);
 
   const [simulationStep, setSimulationStep] = useState<'whatsapp_preview' | 'eligibility_check' | 'accepted' | 'declined'>('whatsapp_preview');
 
@@ -43,7 +49,7 @@ export const DonorSimulatorModal: React.FC<DonorSimulatorModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 overflow-y-auto">
+    <dialog ref={dialogRef} onCancel={onClose} aria-label="Simulate donor response" className="m-auto max-h-[90dvh] w-[calc(100%-2rem)] max-w-lg rounded-xl bg-neutral-900 p-0 backdrop:bg-black/60">
       <div className="bg-neutral-900 text-neutral-100 rounded-xl max-w-lg w-full border border-neutral-800 overflow-hidden relative">
         {/* Header - Editorial Audit Bar */}
         <div className="px-5 py-4 border-b border-neutral-800 flex items-center justify-between">
@@ -72,10 +78,10 @@ export const DonorSimulatorModal: React.FC<DonorSimulatorModalProps> = ({
               <div className="border-b border-neutral-800 pb-3">
                 <div className="flex items-center gap-2 text-xs font-mono text-emerald-400">
                   <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                  Direct Webhook Dispatch • Within {donor.distanceKm} km
+                  Sample donor alert • Within {donor.distanceKm} km
                 </div>
                 <p className="text-xs text-neutral-400 mt-1 leading-generous">
-                  Alert sent via direct WhatsApp API. Cooldown verified (&gt;90 days since last donation).
+                  Preview of the message a donor would receive.
                 </p>
               </div>
 
@@ -116,7 +122,7 @@ export const DonorSimulatorModal: React.FC<DonorSimulatorModalProps> = ({
                   Accept & Run Clinical Pre-Screen
                 </button>
                 <button
-                  onClick={() => setSimulationStep('declined')}
+                  onClick={() => { onDecline(); setSimulationStep('declined'); }}
                   className="px-4 py-3 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-semibold text-xs rounded-lg transition-colors border border-neutral-700"
                 >
                   Decline
@@ -228,10 +234,10 @@ export const DonorSimulatorModal: React.FC<DonorSimulatorModalProps> = ({
                   Status: Match Confirmed
                 </div>
                 <h3 className="font-display text-xl font-bold text-neutral-100 tracking-tightest">
-                  Direct Line Established
+                  Response recorded
                 </h3>
                 <p className="text-xs text-neutral-400 mt-1 leading-generous">
-                  {donor.name}'s contact has been shared with {request.patientName}'s attendant at {request.hospitalName}.
+                  {donor.name} now appears in the response list for {request.patientName}.
                 </p>
               </div>
 
@@ -260,7 +266,7 @@ export const DonorSimulatorModal: React.FC<DonorSimulatorModalProps> = ({
                   Request Passed
                 </h3>
                 <p className="text-xs text-neutral-400 mt-1 leading-generous max-w-sm mx-auto">
-                  The system immediately routes the alert to the next verified donor within range.
+                  Return to the request to preview the next available donor.
                 </p>
               </div>
               <button
@@ -273,6 +279,6 @@ export const DonorSimulatorModal: React.FC<DonorSimulatorModalProps> = ({
           )}
         </div>
       </div>
-    </div>
+    </dialog>
   );
 };

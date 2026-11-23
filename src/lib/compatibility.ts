@@ -47,17 +47,17 @@ export function calculateDonorEligibility(lastDonationDateStr: string): {
     return { isEligible: true, cooldownDaysRemaining: 0 };
   }
 
-  const lastDate = new Date(lastDonationDateStr);
-  const today = new Date();
-  const diffTime = Math.abs(today.getTime() - lastDate.getTime());
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  const MIN_COOLDOWN_DAYS = 90;
-
-  if (diffDays >= MIN_COOLDOWN_DAYS) {
-    return { isEligible: true, cooldownDaysRemaining: 0 };
-  } else {
-    return { isEligible: false, cooldownDaysRemaining: MIN_COOLDOWN_DAYS - diffDays };
+  const lastDate = Date.parse(lastDonationDateStr + 'T00:00:00Z');
+  const now = new Date();
+  const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+  const cooldownDays = 90;
+  if (!Number.isFinite(lastDate) || new Date(lastDate).toISOString().slice(0, 10) !== lastDonationDateStr) {
+    return { isEligible: false, cooldownDaysRemaining: cooldownDays };
   }
+
+  const elapsedDays = (today - lastDate) / 86_400_000;
+  const cooldownDaysRemaining = Math.max(0, cooldownDays - elapsedDays);
+  return { isEligible: cooldownDaysRemaining === 0, cooldownDaysRemaining };
 }
 
 /**

@@ -1,251 +1,170 @@
-import React, { useState } from 'react';
-import { BloodGroup, Donor } from '../types';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { calculateDonorEligibility } from '../lib/compatibility';
-import { CheckCircle2, ShieldCheck, MessageSquare, ArrowRight, UserCheck } from 'lucide-react';
+import type { BloodGroup, Donor } from '../types';
 
 interface DonorRegistrationProps {
-  onDonorRegistered: (newDonor: Donor) => void;
+  donors: Donor[];
+  onDonorRegistered: (donor: Donor) => void;
   onGoToRewards: () => void;
 }
 
-const BLOOD_GROUPS: BloodGroup[] = ['O-', 'O+', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+'];
+const bloodGroups: BloodGroup[] = ['O+', 'O-', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-'];
+const fieldStyle = 'mt-1.5 w-full rounded-lg border border-neutral-300 px-3 py-2.5 text-base focus:border-red-700 focus:outline-red-700';
+const choiceStyle = 'block cursor-pointer rounded-lg border border-neutral-300 px-2 py-3 text-center peer-checked:border-red-700 peer-checked:bg-red-50 peer-checked:font-bold peer-checked:text-red-800 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2';
 
-export const DonorRegistration: React.FC<DonorRegistrationProps> = ({
-  onDonorRegistered,
-  onGoToRewards,
-}) => {
-  const [name, setName] = useState('');
-  const [bloodGroup, setBloodGroup] = useState<BloodGroup>('O+');
-  const [phone, setPhone] = useState('');
-  const [city, setCity] = useState('Nava Raipur');
-  const [lastDonated, setLastDonated] = useState('');
-  const [hasDonatedBefore, setHasDonatedBefore] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [createdDonor, setCreatedDonor] = useState<Donor | null>(null);
+function indianMobile(input: string) {
+  const compact = input.replace(/[\s()-]/g, '');
+  const match = /^(?:\+91|91|0)?(\d{10})$/.exec(compact);
+  return match ? '+91' + match[1] : '';
+}
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name || !phone) return;
+export function DonorRegistration({ donors, onDonorRegistered, onGoToRewards }: DonorRegistrationProps) {
+  const [history, setHistory] = useState('');
+  const [lastDonation, setLastDonation] = useState('');
+  const [phoneError, setPhoneError] = useState('');
+  const [registered, setRegistered] = useState<Donor | null>(null);
+  const heading = useRef<HTMLHeadingElement>(null);
+  const now = new Date();
+  const today = new Date(now.getTime() - now.getTimezoneOffset() * 60_000).toISOString().slice(0, 10);
+  const donationDate = history === 'previous' ? lastDonation : '';
+  const eligibility = calculateDonorEligibility(donationDate);
+  const showAvailability = history === 'first' || (donationDate !== '' && donationDate <= today);
 
-    const donationDateStr = hasDonatedBefore && lastDonated ? lastDonated : '';
-    const { isEligible, cooldownDaysRemaining } = calculateDonorEligibility(donationDateStr);
+  useEffect(() => {
+    heading.current?.focus();
+  }, [registered]);
 
-    const newDonor: Donor = {
-      id: 'dn-' + Date.now(),
+  function register(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const fields = new FormData(form);
+    const phone = indianMobile(String(fields.get('phone')));
+    const duplicate = phone && donors.some(donor => indianMobile(donor.phone) === phone);
+    if (!phone || duplicate) {
+      setPhoneError(duplicate
+        ? 'This number already belongs to a donor in this session.'
+        : 'Enter a 10-digit Indian number. You can include +91, spaces or hyphens.');
+      form.querySelector<HTMLInputElement>('[name="phone"]')?.focus();
+      return;
+    }
+
+    const name = String(fields.get('name')).trim();
+    const bloodGroup = bloodGroups.find(group => group === fields.get('bloodGroup'));
+    if (!bloodGroup) return;
+
+    const donor: Donor = {
+      id: 'dn-' + (crypto.randomUUID?.() ?? Date.now().toString()),
       name,
       bloodGroup,
-      phone: phone.startsWith('+91') ? phone : '+91 ' + phone,
-      city,
-      distanceKm: 3.2,
-      lastDonationDate: donationDateStr || new Date().toISOString().split('T')[0],
-      isEligible,
-      cooldownDaysRemaining,
-      donationsCount: hasDonatedBefore ? 1 : 0,
-      referralCode: `${name.toUpperCase().replace(/\s+/g, '')}-${bloodGroup.replace('+', 'POS').replace('-', 'NEG')}`
+      phone,
+      city: String(fields.get('city')).trim(),
+      distanceKm: 3.2, // Illustrative distance used in the session's demo matches.
+      lastDonationDate: donationDate,
+      ...eligibility,
+      donationsCount: history === 'previous' ? 1 : 0,
+      referralCode: name.toUpperCase().replace(/\s+/g, '') + '-' + bloodGroup.replace('+', 'POS').replace('-', 'NEG'),
     };
+    onDonorRegistered(donor);
+    setRegistered(donor);
+  }
 
-    onDonorRegistered(newDonor);
-    setCreatedDonor(newDonor);
-    setIsSuccess(true);
-  };
+  function startAnother() {
+    setHistory('');
+    setLastDonation('');
+    setPhoneError('');
+    setRegistered(null);
+  }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12 space-y-8">
-      {/* Editorial Header */}
-      <div className="border border-neutral-200 bg-white rounded-xl p-6 sm:p-10 space-y-3">
-        <span className="font-mono text-xs uppercase tracking-wider text-red-700 font-semibold block">
-          Civic Enrollment Protocol
-        </span>
-        <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-neutral-900 tracking-tightest leading-[1.1]">
-          Join the Citizen Donor Network
-        </h1>
-        <p className="text-sm text-neutral-600 max-w-2xl leading-generous font-sans">
-          Zero app downloads. You receive a direct notification via WhatsApp only when a critical patient within your immediate transit radius requires your compatible blood type.
-        </p>
-      </div>
+    <section className="mx-auto max-w-2xl px-4 py-8 sm:py-12">
+      <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white">
+        <header className="border-b border-neutral-200 px-5 py-6 sm:px-9 sm:py-8">
+          {registered && <CheckCircle2 aria-hidden className="mb-3 h-7 w-7 text-emerald-700" />}
+          <h1 ref={heading} tabIndex={-1} className="font-display text-4xl font-bold tracking-tight focus:outline-none">
+            {registered ? 'Donor profile added' : 'Register a donor'}
+          </h1>
+          <p className="mt-2 text-sm leading-relaxed text-neutral-600">
+            {registered ? 'This profile stays in the demo roster until you refresh the page.'
+              : 'Use fictional details to try donor matching. This demo keeps the profile in your browser until you refresh.'}
+          </p>
+        </header>
 
-      {!isSuccess ? (
-        <div className="border border-neutral-200 bg-white rounded-xl p-6 sm:p-10">
-          <form onSubmit={handleSubmit} className="space-y-6 font-sans text-xs">
-            {/* Full Name */}
-            <div>
-              <label className="block font-mono uppercase tracking-wider text-neutral-700 mb-1 font-semibold text-[11px]">
-                Full Legal Name
-              </label>
-              <input
-                type="text"
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Tanmay Sharma"
-                className="w-full px-3.5 py-2.5 rounded border border-neutral-300 text-sm focus:border-neutral-900 outline-none"
-              />
+        {registered ? (
+          <div className="space-y-6 p-5 sm:p-9">
+            <div className="flex items-center gap-4">
+              <span className="rounded-xl bg-red-50 px-4 py-3 font-display text-3xl font-bold text-red-800">{registered.bloodGroup}</span>
+              <div className="min-w-0 break-words">
+                <h2 className="font-display text-2xl font-bold">{registered.name}</h2>
+                <p className="text-sm text-neutral-600">{registered.city}</p>
+              </div>
             </div>
-
-            {/* Blood Group */}
-            <div>
-              <label className="block font-mono uppercase tracking-wider text-neutral-700 mb-2 font-semibold text-[11px]">
-                Blood Group (Confirmed or on Record)
+            <dl className="space-y-3 rounded-xl bg-neutral-50 p-4 text-sm">
+              <div><dt className="text-neutral-600">Demo matching status</dt><dd className="font-semibold">{registered.isEligible ? 'Available for matching requests' : 'On cooldown · ' + registered.cooldownDaysRemaining + ' days remaining'}</dd></div>
+              <div><dt className="text-neutral-600">Contact number</dt><dd>{registered.phone}</dd></div>
+              <div><dt className="text-neutral-600">Referral code</dt><dd className="break-all font-mono">{registered.referralCode}</dd></div>
+            </dl>
+            <div className="flex flex-wrap gap-3">
+              <button onClick={startAnother} className="rounded-lg bg-neutral-900 px-4 py-3 text-sm font-semibold text-white">Register another donor</button>
+              <button onClick={onGoToRewards} className="rounded-lg border border-neutral-300 px-4 py-3 text-sm font-semibold">View milestones</button>
+            </div>
+          </div>
+        ) : (
+          <form onSubmit={register} autoComplete="off" className="space-y-6 p-5 text-sm sm:p-9">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="font-medium">Donor name
+                <input name="name" required pattern={'.*\\S.*'} title="Enter a name." maxLength={100} className={fieldStyle} placeholder="e.g. Asha Sharma" />
               </label>
-              <div className="grid grid-cols-4 sm:grid-cols-8 gap-2 font-mono">
-                {BLOOD_GROUPS.map((g) => (
-                  <button
-                    type="button"
-                    key={g}
-                    onClick={() => setBloodGroup(g)}
-                    className={`py-2 rounded text-xs font-bold border transition-colors ${
-                      bloodGroup === g
-                        ? 'border-neutral-900 bg-neutral-900 text-white'
-                        : 'border-neutral-200 text-neutral-700 hover:border-neutral-400 bg-neutral-50'
-                    }`}
-                  >
-                    {g}
-                  </button>
+              <label className="font-medium">City or area
+                <input name="city" required pattern={'.*\\S.*'} title="Enter a city or area." maxLength={100} className={fieldStyle} placeholder="e.g. Nava Raipur" />
+              </label>
+            </div>
+            <div>
+              <label htmlFor="donor-phone" className="font-medium">Indian mobile number</label>
+              <input id="donor-phone" name="phone" type="tel" required maxLength={25} placeholder="+91 98765 43210"
+                aria-invalid={Boolean(phoneError)} aria-describedby={phoneError ? 'phone-error' : undefined}
+                onChange={() => setPhoneError('')} className={fieldStyle} />
+              {phoneError && <p id="phone-error" role="alert" className="mt-1.5 text-sm text-red-700">{phoneError}</p>}
+            </div>
+            <fieldset>
+              <legend className="mb-2 font-medium">Blood group</legend>
+              <div className="grid grid-cols-4 gap-2 sm:grid-cols-8">
+                {bloodGroups.map(group => (
+                  <label key={group}>
+                    <input type="radio" className="peer sr-only" name="bloodGroup" value={group} required />
+                    <span className={choiceStyle}>{group}</span>
+                  </label>
                 ))}
               </div>
-            </div>
-
-            {/* Contact & City */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block font-mono uppercase tracking-wider text-neutral-700 mb-1 font-semibold text-[11px]">
-                  WhatsApp Contact Number
-                </label>
-                <input
-                  type="tel"
-                  required
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="98765 43210"
-                  className="w-full px-3.5 py-2.5 rounded border border-neutral-300 text-sm focus:border-neutral-900 outline-none font-mono"
-                />
-                <p className="text-[10px] text-neutral-400 mt-1 font-mono">Used solely for urgent emergency dispatch.</p>
-              </div>
-
-              <div>
-                <label className="block font-mono uppercase tracking-wider text-neutral-700 mb-1 font-semibold text-[11px]">
-                  City / Residential Area
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  placeholder="e.g. Nava Raipur, Chhattisgarh"
-                  className="w-full px-3.5 py-2.5 rounded border border-neutral-300 text-sm focus:border-neutral-900 outline-none"
-                />
-              </div>
-            </div>
-
-            {/* Cooldown Protection Check */}
-            <div className="p-4 bg-neutral-50 rounded border border-neutral-200 space-y-3 font-mono text-xs">
-              <label className="flex items-center gap-2 cursor-pointer text-neutral-800 font-semibold">
-                <input
-                  type="checkbox"
-                  checked={hasDonatedBefore}
-                  onChange={(e) => setHasDonatedBefore(e.target.checked)}
-                  className="rounded text-neutral-900 focus:ring-0 w-4 h-4 border-neutral-300"
-                />
-                <span>I have previously donated whole blood</span>
-              </label>
-
-              {hasDonatedBefore && (
-                <div className="pt-2 border-t border-neutral-200">
-                  <label className="block text-neutral-600 mb-1 text-[11px]">
-                    Approximate Date of Last Donation:
+            </fieldset>
+            <fieldset className="border-t border-neutral-200 pt-4">
+              <legend className="pr-2 font-medium">Has this donor given whole blood before?</legend>
+              <div className="grid grid-cols-2 gap-2">
+                {[['first', 'First-time donor'], ['previous', 'Donated before']].map(([value, label]) => (
+                  <label key={value}>
+                    <input type="radio" name="history" value={value} checked={history === value}
+                      onChange={() => setHistory(value)} required className="peer sr-only" />
+                    <span className={choiceStyle}>{label}</span>
                   </label>
-                  <input
-                    type="date"
-                    value={lastDonated}
-                    onChange={(e) => setLastDonated(e.target.value)}
-                    className="px-3 py-1.5 rounded border border-neutral-300 text-xs text-neutral-900 outline-none bg-white font-mono"
-                  />
-                  <p className="text-[10px] text-neutral-500 mt-1">
-                    The system suppresses donor notifications for 90 days after any donation per ICMR guidelines.
-                  </p>
-                </div>
+                ))}
+              </div>
+              {history === 'previous' && (
+                <label className="mt-4 block font-medium">Last whole blood donation
+                  <input type="date" required max={today} value={lastDonation} onChange={e => setLastDonation(e.target.value)} className={fieldStyle} />
+                </label>
               )}
-            </div>
-
-            {/* Clinical Guardrails */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-neutral-600 font-mono">
-              <div className="p-3 border border-neutral-200 rounded flex items-center gap-2 bg-neutral-50">
-                <ShieldCheck className="w-4 h-4 text-neutral-600 flex-shrink-0" />
-                <span>Automated 90-day cooldown enforcement</span>
-              </div>
-              <div className="p-3 border border-neutral-200 rounded flex items-center gap-2 bg-neutral-50">
-                <MessageSquare className="w-4 h-4 text-neutral-600 flex-shrink-0" />
-                <span>Single-tap WhatsApp response model</span>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full py-3.5 bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-xs rounded transition-colors border border-neutral-800"
-            >
-              Enroll on National Civic Roster
+              <p aria-live="polite" className="mt-2 text-sm text-neutral-600">
+                {showAvailability ? (eligibility.isEligible ? 'Available for matching in this demo.'
+                  : 'You can register now. The demo cooldown has ' + eligibility.cooldownDaysRemaining + ' days remaining.')
+                  : 'The demo uses a 90-day interval between donations.'}
+              </p>
+            </fieldset>
+            <button type="submit" className="flex w-full items-center justify-center gap-2 rounded-lg bg-red-700 px-5 py-3 font-semibold text-white hover:bg-red-800">
+              Add demo donor <ArrowRight aria-hidden className="h-4 w-4" />
             </button>
           </form>
-        </div>
-      ) : (
-        /* Formal Civic Credential Display */
-        <div className="border border-neutral-200 bg-white rounded-xl p-8 sm:p-12 space-y-6">
-          <div className="border-b border-neutral-200 pb-6">
-            <span className="font-mono text-xs uppercase tracking-wider text-emerald-700 font-semibold block mb-1">
-              Enrollment Confirmed
-            </span>
-            <h2 className="font-display text-3xl font-bold text-neutral-900 tracking-tightest">
-              Verified Citizen Credential: {createdDonor?.name}
-            </h2>
-            <p className="text-xs sm:text-sm text-neutral-600 mt-2 font-sans leading-generous">
-              Your profile is now active on the local emergency response grid. You will only receive a contact notification if a patient within transit distance of {createdDonor?.city} requires compatible {createdDonor?.bloodGroup} blood.
-            </p>
-          </div>
-
-          {/* Digital Credential Document */}
-          <div className="border border-neutral-800 bg-neutral-900 text-neutral-100 rounded-lg p-6 font-mono text-xs space-y-4">
-            <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
-              <span className="text-neutral-400 uppercase tracking-wider text-[10px]">National Blood Transfusion Network</span>
-              <span className="text-emerald-400 font-bold">STATUS: ACTIVE</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <span className="text-neutral-500 uppercase text-[10px] block">Citizen Donor</span>
-                <span className="text-neutral-200 font-bold text-sm">{createdDonor?.name}</span>
-              </div>
-              <div>
-                <span className="text-neutral-500 uppercase text-[10px] block">Blood Group</span>
-                <span className="text-red-400 font-bold text-sm">{createdDonor?.bloodGroup}</span>
-              </div>
-              <div>
-                <span className="text-neutral-500 uppercase text-[10px] block">Assigned Territory</span>
-                <span className="text-neutral-200">{createdDonor?.city}</span>
-              </div>
-              <div>
-                <span className="text-neutral-500 uppercase text-[10px] block">Advocacy Referral Code</span>
-                <span className="text-neutral-200 font-bold">{createdDonor?.referralCode}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="pt-2 flex flex-col sm:flex-row gap-3">
-            <button
-              onClick={onGoToRewards}
-              className="px-6 py-3 bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-xs rounded flex items-center justify-center gap-2 border border-neutral-800 transition-colors"
-            >
-              View Community Advocacy Milestones
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-            <button
-              onClick={() => setIsSuccess(false)}
-              className="px-6 py-3 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-semibold text-xs rounded border border-neutral-200 transition-colors"
-            >
-              Enroll Another Citizen
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </section>
   );
-};
+}

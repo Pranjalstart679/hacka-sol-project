@@ -14,7 +14,7 @@
     
     <!-- App Icon -->
     <link rel="icon" type="image/svg+xml" href="/icon.svg" />
-    <link rel="apple-touch-icon" href="/icon.svg" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
 
     <!-- Google Fonts: Editorial Display (Newsreader) & Clean Sans (Plus Jakarta Sans) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -24,15 +24,5 @@
   <body class="bg-slate-50 text-slate-900 antialiased selection:bg-red-500 selection:text-white">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <script>
-      // Register PWA Service Worker
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').catch((err) => {
-            console.log('SW registration failed:', err);
-          });
-        });
-      }
-    </script>
   </body>
 </html>

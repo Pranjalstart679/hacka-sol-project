@@ -15,9 +15,9 @@ export const BloodBankExplorer: React.FC<BloodBankExplorerProps> = ({ bloodBanks
   const [filterGroup, setFilterGroup] = useState<BloodGroup | 'ALL'>('ALL');
 
   const filtered = bloodBanks.filter((bank) => {
-    const matchesSearch = bank.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      bank.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      bank.address.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = bank.name.toLowerCase().includes(searchTerm.trim().toLowerCase()) ||
+      bank.city.toLowerCase().includes(searchTerm.trim().toLowerCase()) ||
+      bank.address.toLowerCase().includes(searchTerm.trim().toLowerCase());
 
     const matchesCategory = filterCategory === 'ALL' || bank.category === filterCategory;
 
@@ -34,10 +34,10 @@ export const BloodBankExplorer: React.FC<BloodBankExplorerProps> = ({ bloodBanks
           National Storage Registry
         </span>
         <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-neutral-900 tracking-tightest leading-[1.1]">
-          Verified Blood Bank & Hospital Inventory
+          Blood bank directory
         </h1>
         <p className="text-sm text-neutral-600 max-w-2xl leading-generous font-sans">
-          Real-time unit availability, 24-hour emergency helplines, and distance calculations from your active location.
+          Explore sample inventory and compare distances from your selected location.
         </p>
 
         {/* Search and Filters Bar */}
@@ -47,6 +47,7 @@ export const BloodBankExplorer: React.FC<BloodBankExplorerProps> = ({ bloodBanks
             <Search className="w-4 h-4 text-neutral-400 absolute left-3.5 top-3" />
             <input
               type="text"
+              aria-label="Search facilities"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search facility name, district, or hospital..."
@@ -57,6 +58,7 @@ export const BloodBankExplorer: React.FC<BloodBankExplorerProps> = ({ bloodBanks
           {/* Category Filter */}
           <div className="md:col-span-3">
             <select
+              aria-label="Facility category"
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
               className="w-full px-3 py-2 rounded border border-neutral-300 text-xs font-mono text-neutral-700 bg-white outline-none"
@@ -64,13 +66,15 @@ export const BloodBankExplorer: React.FC<BloodBankExplorerProps> = ({ bloodBanks
               <option value="ALL">All Categories</option>
               <option value="Government">Government Hospitals</option>
               <option value="Red Cross">Red Cross Society</option>
-              <option value="Private">Private / Charitable</option>
+              <option value="Private">Private Hospitals</option>
+              <option value="Charitable">Charitable Hospitals</option>
             </select>
           </div>
 
           {/* Blood Group Filter */}
           <div className="md:col-span-3">
             <select
+              aria-label="Blood group"
               value={filterGroup}
               onChange={(e) => setFilterGroup(e.target.value as any)}
               className="w-full px-3 py-2 rounded border border-neutral-300 text-xs font-mono text-neutral-700 bg-white outline-none"
@@ -87,10 +91,19 @@ export const BloodBankExplorer: React.FC<BloodBankExplorerProps> = ({ bloodBanks
       {/* Registry Count */}
       <div className="flex items-center justify-between text-xs font-mono text-neutral-500 px-1">
         <span>Showing {filtered.length} Indexed Blood Centers</span>
-        <span>Verified Inventory Telemetry</span>
+        <span>Sample inventory</span>
       </div>
 
-      {/* Facilities Ledger Grid */}
+      {filtered.length === 0 && (
+        <div role="status" className="rounded-xl border border-neutral-200 bg-white p-6">
+          <p>No facilities match these filters.</p>
+          <button className="mt-2 text-sm underline" onClick={() => {
+            setSearchTerm('');
+            setFilterCategory('ALL');
+            setFilterGroup('ALL');
+          }}>Clear filters</button>
+        </div>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {filtered.map((bank) => (
           <div

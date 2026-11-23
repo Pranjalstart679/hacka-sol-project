@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { DonorSimulatorModal } from './DonorSimulatorModal';
 import { BloodGroup, BloodBank, Donor, SOSRequest } from '../types';
 import { getCompatibleDonorGroups } from '../lib/compatibility';
 import { generateWhatsAppMessage } from '../lib/mockData';
@@ -22,7 +23,6 @@ interface EmergencyWizardProps {
   donors: Donor[];
   userLocation: { lat: number; lng: number; label: string };
   initialGroup?: BloodGroup | null;
-  onOpenDonorSimulator: (request: SOSRequest, donor: Donor) => void;
   onBackToHome?: () => void;
 }
 
@@ -33,11 +33,10 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
   donors,
   userLocation,
   initialGroup,
-  onOpenDonorSimulator,
   onBackToHome,
 }) => {
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
-  const [selectedGroup, setSelectedGroup] = useState<BloodGroup | null>(initialGroup || 'O+');
+  const [selectedGroup, setSelectedGroup] = useState<BloodGroup | null>(initialGroup ?? null);
 
   useEffect(() => {
     if (initialGroup) {
@@ -55,7 +54,9 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
   
   // Active broadcast state
   const [activeSOS, setActiveSOS] = useState<SOSRequest | null>(null);
-  const [acceptedDonorIds] = useState<string[]>(['dn-1']);
+  const [simDonor, setSimDonor] = useState<Donor | null>(null);
+  const [declinedIds, setDeclinedIds] = useState<string[]>([]);
+  const acceptedDonorIds = activeSOS?.acceptedDonors ?? [];
 
   const compatibleGroups = selectedGroup ? getCompatibleDonorGroups(selectedGroup) : [];
 
@@ -64,8 +65,10 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
 
   // Eligible donors compatible with selected blood group
   const compatibleDonors = donors.filter(
-    (d) => selectedGroup && compatibleGroups.includes(d.bloodGroup) && d.isEligible
+    (d) => (step === 4 && activeSOS ? activeSOS.compatibleGroups : compatibleGroups).includes(d.bloodGroup) && d.isEligible && d.distanceKm <= 15
   );
+
+  const nextDonor = compatibleDonors.find(d => !acceptedDonorIds.includes(d.id) && !declinedIds.includes(d.id));
 
   const handleBroadcastSOS = () => {
     if (!selectedGroup) return;
@@ -84,8 +87,9 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
       createdAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       compatibleGroups,
       status: 'BROADCASTED',
-      acceptedDonors: acceptedDonorIds
+      acceptedDonors: []
     };
+    setDeclinedIds([]);
     setActiveSOS(newRequest);
     setStep(4);
   };
@@ -153,7 +157,7 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
               Select patient blood group for immediate matching.
             </h1>
             <p className="text-sm text-neutral-600 mt-3 leading-generous">
-              No lengthy forms or delays during critical transfusion windows. Select the patient's blood type to calculate antigen compatibility and query live blood bank tallies.
+              No lengthy forms or delays during critical transfusion windows. Select the patient's blood type to calculate antigen compatibility and explore sample inventory.
             </p>
           </div>
 
@@ -188,7 +192,7 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
                 Antigen Compatibility Engine
               </div>
               <p className="text-neutral-700 font-sans text-xs sm:text-sm leading-generous">
-                A patient requiring <strong className="text-red-700 font-bold">{selectedGroup}</strong> blood can safely receive transfusions from verified donors with these types:
+                The demo matches <strong className="text-red-700 font-bold">{selectedGroup}</strong> with these red cell donor groups:
               </p>
               <div className="flex flex-wrap gap-2 pt-1">
                 {compatibleGroups.map((g) => (
@@ -253,7 +257,7 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
               <div>
                 <strong>Distance Risk: 12% of Indian districts are over 100 km from any operational blood storage facility.</strong>
                 <p className="mt-0.5 text-amber-900">
-                  If nearby hospital stock is depleted or travel time exceeds safety windows, trigger the direct WhatsApp broadcast below to alert verified local donors immediately.
+                  Use the donor simulator to explore what happens when a facility has insufficient stock.
                 </p>
               </div>
             </div>
@@ -340,7 +344,7 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
               Are nearby storage facilities insufficient?
             </h3>
             <p className="text-xs sm:text-sm text-neutral-300 max-w-xl leading-generous font-sans">
-              Avoid losing time traveling to dry facilities. Dispatch an immediate alert to <strong>{compatibleDonors.length} verified compatible donors</strong> registered in the local grid.
+              Preview an alert for <strong>{compatibleDonors.length} matching demo donors</strong>.
             </p>
             <div className="pt-2">
               <button
@@ -374,18 +378,18 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
                 Broadcast Distress Alert for <span className="text-red-700">{selectedGroup}</span> Blood
               </h2>
               <p className="text-xs sm:text-sm text-neutral-600 mt-1 leading-generous font-sans">
-                Enter core patient parameters. The platform will format the clinical alert and deliver it via WhatsApp webhook to verified local contacts.
+                Use sample patient details to preview a request and simulate donor replies.
               </p>
             </div>
 
-            <div className="space-y-4 font-sans text-xs">
+            <form onSubmit={event => { event.preventDefault(); handleBroadcastSOS(); }} className="space-y-4 font-sans text-xs">
               <div>
-                <label className="block font-mono uppercase tracking-wider text-neutral-700 mb-1 font-semibold text-[11px]">
+                <label htmlFor="patientName" className="block font-mono uppercase tracking-wider text-neutral-700 mb-1 font-semibold text-[11px]">
                   Patient Name
                 </label>
                 <input
                   type="text"
-                  value={patientName}
+                  id="patientName" required value={patientName}
                   onChange={(e) => setPatientName(e.target.value)}
                   placeholder="e.g. Rahul Sharma"
                   className="w-full px-3.5 py-2.5 rounded border border-neutral-300 text-sm focus:border-neutral-900 outline-none"
@@ -394,22 +398,22 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-mono uppercase tracking-wider text-neutral-700 mb-1 font-semibold text-[11px]">
+                  <label htmlFor="patientAge" className="block font-mono uppercase tracking-wider text-neutral-700 mb-1 font-semibold text-[11px]">
                     Age
                   </label>
                   <input
                     type="number"
-                    value={patientAge}
-                    onChange={(e) => setPatientAge(Number(e.target.value))}
+                    id="patientAge" required min={0} value={Number.isNaN(patientAge) ? '' : patientAge}
+                    onChange={(e) => setPatientAge(e.target.valueAsNumber)}
                     className="w-full px-3.5 py-2.5 rounded border border-neutral-300 text-sm focus:border-neutral-900 outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block font-mono uppercase tracking-wider text-neutral-700 mb-1 font-semibold text-[11px]">
+                  <label htmlFor="patientGender" className="block font-mono uppercase tracking-wider text-neutral-700 mb-1 font-semibold text-[11px]">
                     Gender
                   </label>
                   <select
-                    value={patientGender}
+                    id="patientGender" required value={patientGender}
                     onChange={(e) => setPatientGender(e.target.value as any)}
                     className="w-full px-3.5 py-2.5 rounded border border-neutral-300 text-sm focus:border-neutral-900 outline-none bg-white"
                   >
@@ -422,25 +426,25 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-mono uppercase tracking-wider text-neutral-700 mb-1 font-semibold text-[11px]">
+                  <label htmlFor="unitsNeeded" className="block font-mono uppercase tracking-wider text-neutral-700 mb-1 font-semibold text-[11px]">
                     Units Required
                   </label>
                   <input
                     type="number"
                     min={1}
                     max={10}
-                    value={unitsNeeded}
+                    id="unitsNeeded" required value={unitsNeeded}
                     onChange={(e) => setUnitsNeeded(Number(e.target.value))}
                     className="w-full px-3.5 py-2.5 rounded border border-neutral-300 text-sm focus:border-neutral-900 outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block font-mono uppercase tracking-wider text-neutral-700 mb-1 font-semibold text-[11px]">
+                  <label htmlFor="contactPhone" className="block font-mono uppercase tracking-wider text-neutral-700 mb-1 font-semibold text-[11px]">
                     Emergency Attendant Contact
                   </label>
                   <input
                     type="tel"
-                    value={contactPhone}
+                    id="contactPhone" required value={contactPhone}
                     onChange={(e) => setContactPhone(e.target.value)}
                     className="w-full px-3.5 py-2.5 rounded border border-neutral-300 text-sm focus:border-neutral-900 outline-none"
                   />
@@ -448,14 +452,14 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
               </div>
 
               <div>
-                <label className="block font-mono uppercase tracking-wider text-neutral-700 mb-1 font-semibold text-[11px]">
+                <label htmlFor="hospitalName" className="block font-mono uppercase tracking-wider text-neutral-700 mb-1 font-semibold text-[11px]">
                   Hospital Facility & Ward
                 </label>
                 <div className="relative">
                   <Hospital className="w-4 h-4 text-neutral-400 absolute left-3 top-3" />
                   <input
                     type="text"
-                    value={hospitalName}
+                    id="hospitalName" required value={hospitalName}
                     onChange={(e) => setHospitalName(e.target.value)}
                     placeholder="e.g. AIIMS Raipur Trauma Center"
                     className="w-full pl-9 pr-3.5 py-2.5 rounded border border-neutral-300 text-sm focus:border-neutral-900 outline-none"
@@ -485,32 +489,16 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
               {/* Action Buttons */}
               <div className="pt-2 flex flex-col sm:flex-row gap-3">
                 <button
-                  onClick={handleBroadcastSOS}
+                  type="submit"
                   className="flex-1 py-3.5 bg-red-700 hover:bg-red-800 text-white font-semibold text-xs rounded flex items-center justify-center gap-2 transition-colors border border-red-600"
                 >
                   <Send className="w-4 h-4" />
-                  Broadcast Alert to {compatibleDonors.length} Verified Donors
+                  Simulate alert for {compatibleDonors.length} donors
                 </button>
 
-                <a
-                  href={generateWhatsAppMessage(
-                    patientName,
-                    selectedGroup!,
-                    unitsNeeded,
-                    hospitalName,
-                    userLocation.label,
-                    compatibleGroups,
-                    contactPhone
-                  )}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="py-3.5 px-6 bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-xs rounded flex items-center justify-center gap-2 border border-neutral-800 transition-colors"
-                >
-                  <Share2 className="w-4 h-4" />
-                  Share Direct
-                </a>
+
               </div>
-            </div>
+            </form>
           </div>
         </div>
       )}
@@ -524,7 +512,7 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
               <div>
                 <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded text-[10px] font-mono uppercase tracking-wider bg-red-950 text-red-400 border border-red-800">
                   <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                  Emergency Dispatch Active
+                  Simulated dispatch
                 </span>
                 <h2 className="font-display text-2xl sm:text-3xl font-bold mt-2 text-white tracking-tightest">
                   Request for {activeSOS.unitsNeeded} Units of {activeSOS.bloodGroup} Blood
@@ -550,7 +538,7 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
                   className="px-4 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 font-semibold text-xs rounded flex items-center gap-1.5 border border-neutral-700 transition-colors"
                 >
                   <Share2 className="w-4 h-4" />
-                  Forward Message
+                  Share demo on WhatsApp
                 </a>
               </div>
             </div>
@@ -563,15 +551,15 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
               </div>
               <div className="border border-neutral-800 p-3 rounded bg-neutral-950">
                 <span className="text-neutral-500 uppercase tracking-wider text-[10px] block">Responses</span>
-                <span className="text-lg font-bold text-emerald-400 mt-1 block">{acceptedDonorIds.length} Verified</span>
+                <span className="text-lg font-bold text-emerald-400 mt-1 block">{acceptedDonorIds.length} accepted</span>
               </div>
               <div className="border border-neutral-800 p-3 rounded bg-neutral-950">
-                <span className="text-neutral-500 uppercase tracking-wider text-[10px] block">Search Radius</span>
-                <span className="text-lg font-bold text-neutral-200 mt-1 block">&lt; 15 km</span>
+                <span className="text-neutral-500 uppercase tracking-wider text-[10px] block">Sample radius</span>
+                <span className="text-lg font-bold text-neutral-200 mt-1 block">≤ 15 km</span>
               </div>
               <div className="border border-neutral-800 p-3 rounded bg-neutral-950">
-                <span className="text-neutral-500 uppercase tracking-wider text-[10px] block">Avg Response</span>
-                <span className="text-lg font-bold text-neutral-200 mt-1 block">2.4 mins</span>
+                <span className="text-neutral-500 uppercase tracking-wider text-[10px] block">Declined</span>
+                <span className="text-lg font-bold text-neutral-200 mt-1 block">{declinedIds.length}</span>
               </div>
             </div>
           </div>
@@ -581,30 +569,25 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-200 pb-4">
               <div>
                 <h3 className="font-display text-xl sm:text-2xl font-bold text-neutral-900 tracking-tightest">
-                  Verified Responding Donors
+                  Donor responses
                 </h3>
                 <p className="text-xs text-neutral-600 mt-1 leading-generous font-sans">
-                  Individuals within transit range who have cleared the 90-day cooldown and accepted the emergency alert.
+                  These demo donors accepted the current request in the simulator. Donor distances are sample values.
                 </p>
               </div>
 
               {/* Simulation Trigger */}
               <button
-                onClick={() => {
-                  const nextDonor = compatibleDonors.find(d => !acceptedDonorIds.includes(d.id));
-                  if (nextDonor) {
-                    onOpenDonorSimulator(activeSOS, nextDonor);
-                  } else {
-                    alert('All mock eligible donors have responded!');
-                  }
-                }}
+                disabled={!nextDonor}
+                onClick={() => setSimDonor(nextDonor ?? null)}
                 className="px-3.5 py-2 bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-semibold rounded flex items-center gap-1.5 transition-colors border border-neutral-800"
               >
-                Simulate Recipient Audit View
+                {nextDonor ? 'Simulate donor response' : 'No more donors to preview'}
               </button>
             </div>
 
             <div className="space-y-3 font-sans">
+              {acceptedDonorIds.length === 0 && <p role="status" className="text-sm text-neutral-600">No donors have accepted this request yet.</p>}
               {compatibleDonors
                 .filter(d => acceptedDonorIds.includes(d.id))
                 .map((donor) => (
@@ -620,39 +603,36 @@ export const EmergencyWizard: React.FC<EmergencyWizardProps> = ({
                         <div className="flex items-center gap-2">
                           <h4 className="font-bold text-neutral-900 text-base">{donor.name}</h4>
                           <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-200">
-                            Screened & Ready
+                            Accepted in demo
                           </span>
                         </div>
                         <div className="text-xs text-neutral-600 mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono">
                           <span>Transit: <strong>{donor.distanceKm} km</strong></span>
                           <span>Location: {donor.city}</span>
+                          <span>Demo contact: {donor.phone}</span>
                           <span>Prior Donations: {donor.donationsCount}</span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 self-end sm:self-center">
-                      <a
-                        href={`tel:${donor.phone}`}
-                        className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold rounded flex items-center gap-1.5 border border-emerald-600 transition-colors"
-                      >
-                        <Phone className="w-3.5 h-3.5" />
-                        Call Donor
-                      </a>
-                      <a
-                        href={`https://wa.me/${donor.phone.replace(/[^0-9]/g, '')}?text=Hello%20${donor.name},%20we%20received%20your%20acceptance%20on%20Rakshya%20for%20${activeSOS.patientName}.%20Thank%20you.`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="px-4 py-2 bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-semibold rounded flex items-center gap-1.5 border border-neutral-800 transition-colors"
-                      >
-                        WhatsApp
-                      </a>
-                    </div>
                   </div>
                 ))}
             </div>
           </div>
         </div>
+      )}
+      {simDonor && activeSOS && (
+        <DonorSimulatorModal
+          donor={simDonor}
+          request={activeSOS}
+          onClose={() => setSimDonor(null)}
+          onDecline={() => setDeclinedIds(ids => [...new Set([...ids, simDonor.id])])}
+          onDonorAccept={id => setActiveSOS(request => request && ({
+            ...request,
+            status: 'MATCHED',
+            acceptedDonors: [...new Set([...request.acceptedDonors, id])],
+          }))}
+        />
       )}
     </div>
   );
